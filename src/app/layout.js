@@ -15,31 +15,35 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: {
-    default: "Debora Ceramica | Премиальная сантехника в Ташкенте",
-    template: "%s | Debora Ceramica"
+    default: "Santex Master Gold | Оптовая сантехника в Самарканде | Премиум бренды",
+    template: "%s | Santex Master Gold"
   },
-  description: "Премиальная сантехника в Ташкенте с 2006 года. Чугунные ванны, унитазы, смесители Grohe, мебель для ванной. Доставка по Ташкенту, профессиональный монтаж.",
+  description: "Оптовая продажа сантехники в Самарканде. Mercury plast, Zegor, Hydro Plast, Climaroom и другие премиум бренды. Доставка по Узбекистану. Низкие цены, гарантия качества.",
   keywords: [
-    "сантехника Ташкент",
-    "премиум сантехника",
-    "чугунные ванны Ташкент",
-    "унитазы купить",
-    "смесители Grohe",
-    "мебель для ванной",
-    "Debora Ceramica",
-    "сантехника премиум класс",
-    "магазин сантехники Ташкент",
-    "ванна чугунная цена"
+    "сантехника Самарканд",
+    "оптовая сантехника Самарканд",
+    "магазин сантехники Самарканд",
+    "Mercury plast Самарканд",
+    "Zegor Самарканд",
+    "Hydro Plast Самарканд",
+    "сантехника оптом",
+    "трубы и фитинги оптом",
+    "смесители оптом",
+    "сантехника для дома",
+    "сантехника для бизнеса",
+    "Santex Master Gold",
+    "магазин сантехники",
+    "сантехника премиум класса"
   ],
-  authors: [{ name: "Debora Ceramica" }],
-  creator: "Debora Ceramica",
-  publisher: "Debora Ceramica",
+  authors: [{ name: "Santex Master Gold" }],
+  creator: "Santex Master Gold",
+  publisher: "Santex Master Gold",
   formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+    email: true,
+    address: true,
+    telephone: true,
   },
-  metadataBase: new URL('https://deboraceramica.uz'),
+  metadataBase: new URL('https://santexmastergold.uz'),
   alternates: {
     canonical: '/',
     languages: {
@@ -48,16 +52,16 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "Debora Ceramica | Премиальная сантехника в Ташкенте",
-    description: "Премиальная сантехника в Ташкенте с 2006 года. Чугунные ванны, унитазы, смесители, мебель для ванной.",
-    url: "https://deboraceramica.uz",
-    siteName: "Debora Ceramica",
+    title: "Santex Master Gold | Оптовая сантехника в Самарканде",
+    description: "Оптовая продажа сантехники в Самарканде. Mercury plast, Zegor, Hydro Plast, Climaroom и другие премиум бренды. Доставка по Узбекистану. Низкие цены, гарантия качества.",
+    url: "https://santexmastergold.uz",
+    siteName: "Santex Master Gold",
     images: [
       {
-        url: "https://deboraceramica.uz/images/logo.png",
+        url: "https://santexmastergold.uz/images/logo.png",
         width: 512,
         height: 512,
-        alt: "Debora Ceramica - Премиальная сантехника",
+        alt: "Santex Master Gold - Оптовая сантехника в Самарканде",
       },
     ],
     locale: "ru_RU",
@@ -65,9 +69,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Debora Ceramica | Премиальная сантехника в Ташкенте",
-    description: "Премиальная сантехника в Ташкенте с 2006 года. Чугунные ванны, унитазы, смесители.",
-    images: ["https://deboraceramica.uz/images/logo.png"],
+    title: "Santex Master Gold | Оптовая сантехника в Самарканде",
+    description: "Оптовая продажа сантехники в Самарканде. Mercury plast, Zegor, Hydro Plast, Climaroom и другие премиум бренды.",
+    images: ["https://santexmastergold.uz/images/logo.png"],
   },
   robots: {
     index: true,
@@ -93,10 +97,10 @@ export const metadata = {
   },
   manifest: '/manifest.json',
   verification: {
-    google: 'pDr_UoSKPefWSuL9sn0_rrLr4AMv-i5isno9fjPVMBs',
-    yandex: '2394eab2d9d75970',
+    google: 'ВАШ_GOOGLE_VERIFICATION_КОД',
+    yandex: 'ВАШ_YANDEX_VERIFICATION_КОД',
   },
-  category: 'sanitary ware',
+  category: 'sanitary ware wholesale',
 };
 
 export const viewport = {
@@ -116,20 +120,109 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Store",
-              "name": "Debora Ceramica",
-              "image": "https://deboraceramica.uz/images/logo.png",
-              "logo": "https://deboraceramica.uz/images/logo.png",
-              "url": "https://deboraceramica.uz",
+              "@type": "WholesaleStore",
+              "name": "Santex Master Gold",
+              "image": "https://santexmastergold.uz/images/logo.png",
+              "logo": "https://santexmastergold.uz/images/logo.png",
+              "url": "https://santexmastergold.uz",
+              "description": "Оптовая продажа сантехники в Самарканде. Премиум бренды: Mercury plast, Zegor, Hydro Plast, Climaroom, Fayz Plast, AeMarket.",
               "address": {
-                "addressLocality": "Ташкент",
-                "addressCountry": "UZ"
+                "@type": "PostalAddress",
+                "addressLocality": "Самарканд",
+                "addressCountry": "UZ",
+                "streetAddress": "ул. Узбекистанская, 45"
               },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "39.6542",
+                "longitude": "66.9597"
+              },
+              "openingHours": "Mo-Su 09:00-20:00",
+              "telephone": "+998 98 110 22 55",
+              "email": "info@santexmastergold.uz",
+              "priceRange": "$$",
               "sameAs": [
-                "https://t.me/debora_ceramica",
-                "https://instagram.com/debora_ceramica",
+                "https://t.me/shavkat_sharipov_86",
+                "https://www.instagram.com/master_gold_plumbing",
                 "https://www.youtube.com/@debora_ceramica"
-              ]
+              ],
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Сантехника",
+                "itemListElement": [
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Трубы и фитинги",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "Mercury plast",
+                        "description": "Качественные трубы и фитинги для водоснабжения и отопления"
+                      },
+                      {
+                        "@type": "Product",
+                        "name": "Hydro Plast",
+                        "description": "Профессиональные системы трубопроводов"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Смесители",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "Zegor",
+                        "description": "Современные смесители для кухни и ванной"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Сантехника",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "DERYA PLASTIK & DERYA KERAMIKA",
+                        "description": "Премиальная сантехника для вашего дома"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Вентиляция",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "Climaroom",
+                        "description": "Климатическое оборудование и вентиляция"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Бочки и емкости",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "Fayz Plast",
+                        "description": "Пластиковые бочки и емкости для хранения воды"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    "name": "Отопление и насосы",
+                    "itemListElement": [
+                      {
+                        "@type": "Product",
+                        "name": "AeMarket",
+                        "description": "Бойлеры, генераторы, насосы"
+                      }
+                    ]
+                  }
+                ]
+              }
             })
           }}
         />
@@ -141,4 +234,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-};
+}
