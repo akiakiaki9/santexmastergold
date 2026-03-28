@@ -1,0 +1,579 @@
+'use client'
+import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import Navbar from '@/app/components/navbar/Navbar';
+import { products } from '@/app/utils/data1';
+import Link from 'next/link';
+import { useCart } from '@/app/context/CartContext';
+import {
+    FiShoppingCart,
+    FiTruck,
+    FiCreditCard,
+    FiShield,
+    FiCheckCircle,
+    FiChevronRight,
+    FiBox,
+    FiCpu,
+    FiPackage,
+    FiImage,
+    FiInfo,
+    FiCheck
+} from 'react-icons/fi';
+import { GiBathtub } from "react-icons/gi";
+import './product.css';
+import Footer from '@/app/components/footer/Footer';
+
+export default function ProductPage() {
+    const params = useParams();
+    const router = useRouter();
+    const { addToCart } = useCart();
+    const [product, setProduct] = useState(null);
+    const [activeImage, setActiveImage] = useState(0);
+    const [activeTab, setActiveTab] = useState('specs');
+    const [selectedOptions, setSelectedOptions] = useState({});
+    const [selectedLegColor, setSelectedLegColor] = useState(null);
+    const [activeImageType, setActiveImageType] = useState('main');
+    const [showNotification, setShowNotification] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
+
+    // Получаем id из params
+    useEffect(() => {
+        if (params?.id) {
+            const found = products.find(p => p.id === parseInt(params.id));
+            setProduct(found);
+            // Сбрасываем выбранный цвет ножек при смене товара
+            setSelectedLegColor(null);
+            setActiveImageType('main');
+            setActiveImage(0);
+        }
+    }, [params]);
+
+    // Собираем все изображения товара
+    const allImages = useMemo(() => {
+        if (!product) return [];
+
+        const images = [];
+
+        // 1. ОСНОВНЫЕ ИЗОБРАЖЕНИЯ ТОВАРА
+        if (product.image) {
+            images.push({
+                type: 'main',
+                url: product.image,
+                label: 'Основное',
+                category: 'main'
+            });
+        }
+
+        // Дополнительные изображения (image_1, image_2, image_3, image_4)
+        const extraImages = ['image_1', 'image_2', 'image_3', 'image_4'];
+        extraImages.forEach((imgKey, index) => {
+            if (product[imgKey]) {
+                images.push({
+                    type: 'main',
+                    url: product[imgKey],
+                    label: `Вид ${index + 2}`,
+                    category: 'main'
+                });
+            }
+        });
+
+        return images;
+    }, [product]);
+
+    // Получаем все цвета ножек для выбора (если есть)
+    const legColorOptions = useMemo(() => {
+        if (!product?.leg_colors) return [];
+
+        return Object.entries(product.leg_colors).map(([key, leg]) => ({
+            key,
+            color: leg.color,
+            url: leg.url,
+            label: leg.color
+        }));
+    }, [product]);
+
+    // Получаем название бренда
+    const brandName = useMemo(() => {
+        if (!product?.brand) return '';
+        return product.brand;
+    }, [product]);
+
+    // Функция для форматирования значения
+    const formatValue = (value) => {
+        if (value === null || value === undefined) return '—';
+        if (typeof value === 'object') {
+            if (Array.isArray(value)) {
+                return value.join(', ');
+            }
+            return JSON.stringify(value);
+        }
+        return String(value);
+    };
+
+    // Форматирование названий полей
+    const formatLabel = (key) => {
+        const labels = {
+            'id': 'ID',
+            'name': 'Название',
+            'category': 'Категория',
+            'brand': 'Бренд',
+            'image': 'Изображение',
+            'inStock': 'Наличие',
+            'oldPrice': 'Старая цена',
+            'price': 'Цена'
+        };
+        return labels[key] || key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
+    };
+
+    // Получаем все характеристики товара (из product, кроме специальных полей)
+    const getAllSpecs = useMemo(() => {
+        if (!product) return [];
+
+        const specs = [];
+        const excludeFields = ['id', 'name', 'category', 'brand', 'image', 'image_1', 'image_2', 'image_3', 'image_4', 'inStock', 'oldPrice', 'price', 'leg_colors'];
+
+        Object.entries(product).forEach(([key, value]) => {
+            if (!excludeFields.includes(key) && value !== null && value !== undefined && value !== '') {
+                specs.push({
+                    key: key,
+                    label: formatLabel(key),
+                    value: value,
+                    type: typeof value === 'object' && !Array.isArray(value) ? 'group' : 'simple'
+                });
+            }
+        });
+
+        return specs;
+    }, [product]);
+
+    // Основные характеристики для выделения
+    const mainSpecs = useMemo(() => {
+        if (!product) return [];
+
+        const priorityFields = ['brand', 'category'];
+
+        return getAllSpecs
+            .filter(spec => priorityFields.includes(spec.key))
+            .slice(0, 3);
+    }, [getAllSpecs, product]);
+
+    // Обработчик смены изображения
+    const handleImageChange = (index) => {
+        setActiveImage(index);
+        if (allImages[index]?.category === 'legs') {
+            setActiveImageType('leg');
+            const legImage = allImages[index];
+            if (legImage.color) {
+                const legOption = legColorOptions.find(l => l.color === legImage.color);
+                if (legOption) setSelectedLegColor(legOption);
+            }
+        } else {
+            setActiveImageType('main');
+        }
+    };
+
+    // Функция для получения цвета в hex
+    const getColorHex = (colorName) => {
+        const colorMap = {
+            'Gold': '#FFD700',
+            'White': '#FFFFFF',
+            'Silver': '#C0C0C0',
+            'Coppery': '#B87333',
+            'Black': '#000000',
+            'Chrome': '#E0E0E0',
+            'Matte Black': '#2C2C2C',
+            'Brushed Nickel': '#A9A9A9'
+        };
+        return colorMap[colorName] || colorName.toLowerCase();
+    };
+
+    // Рендер значения в зависимости от типа
+    const renderValue = (value, type = 'simple') => {
+        if (type === 'array' && Array.isArray(value)) {
+            return (
+                <div className="spec-array">
+                    {value.map((item, idx) => (
+                        <span key={idx} className="spec-array-item">
+                            <FiCheckCircle className="spec-array-icon" />
+                            {item}
+                        </span>
+                    ))}
+                </div>
+            );
+        }
+
+        if (type === 'group' && typeof value === 'object') {
+            return (
+                <div className="spec-group">
+                    {Object.entries(value).map(([k, v]) => (
+                        <div key={k} className="spec-group-item">
+                            <span className="spec-group-label">{formatLabel(k)}:</span>
+                            <span className="spec-group-value">
+                                {typeof v === 'object' ? formatValue(v) : String(v)}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        return <span className="spec-value-text">{formatValue(value)}</span>;
+    };
+
+    // Обработчик добавления в корзину с анимацией
+    const handleAddToCart = () => {
+        if (!product.inStock) return;
+
+        // Добавляем товар в корзину через контекст
+        addToCart(product);
+
+        // Показываем уведомление
+        setNotificationMessage('Товар добавлен в корзину');
+        setShowNotification(true);
+
+        // Добавляем класс анимации к кнопке
+        const btn = document.querySelector('.add-to-cart');
+        if (btn) {
+            btn.classList.add('clicked');
+            setTimeout(() => {
+                btn.classList.remove('clicked');
+            }, 300);
+        }
+
+        // Скрываем уведомление через 2 секунды
+        setTimeout(() => {
+            setShowNotification(false);
+        }, 2000);
+    };
+
+    if (!product) {
+        return (
+            <>
+                <Navbar />
+                <div className="not-found">
+                    <div className="container">
+                        <h2>Товар не найден</h2>
+                        <p>Возможно, товар был удален или перемещен</p>
+                        <button onClick={() => router.push('/')} className="btn btn-primary">
+                            На главную
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
+    }
+
+    const relatedProducts = products
+        .filter(p => p.category === product.category && p.id !== product.id)
+        .slice(0, 4);
+
+    return (
+        <>
+            <Navbar />
+            <main className="product-main">
+                {/* Уведомление о добавлении в корзину */}
+                <div className={`cart-notification ${showNotification ? 'show' : ''}`}>
+                    <FiCheck className="notification-icon" />
+                    <span className="notification-message">{notificationMessage}</span>
+                </div>
+
+                <div className="container">
+                    {/* Хлебные крошки */}
+                    <div className="breadcrumb">
+                        <Link href="/">Главная</Link>
+                        <FiChevronRight className="breadcrumb-icon" />
+                        <Link href="/catalog">Каталог</Link>
+                        <FiChevronRight className="breadcrumb-icon" />
+                        <span>{product.name}</span>
+                    </div>
+
+                    {/* Карточка товара */}
+                    <div className="product-card">
+                        {/* Галерея */}
+                        <div className="product-gallery">
+                            <div className="main-image">
+                                <img
+                                    src={allImages[activeImage]?.url || product.image}
+                                    alt={`${product.name} - ${allImages[activeImage]?.label || ''}`}
+                                    onError={(e) => {
+                                        e.target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR202VPZfMD9kdS4yqx2x8aeg6DYlFypnBNBA&s';
+                                    }}
+                                />
+                                {!product.inStock && (
+                                    <span className="product-badge out">Под заказ</span>
+                                )}
+                                {activeImageType === 'leg' && (
+                                    <span className="image-type-badge">
+                                        <GiBathtub /> {allImages[activeImage]?.label}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Миниатюры */}
+                            {allImages.length > 1 && (
+                                <div className="image-thumbnails">
+                                    {allImages.map((img, index) => (
+                                        <button
+                                            key={index}
+                                            className={`thumb ${activeImage === index ? 'active' : ''} ${img.category}`}
+                                            onClick={() => handleImageChange(index)}
+                                            title={img.label}
+                                        >
+                                            <img
+                                                src={img.url}
+                                                alt={img.label}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                }}
+                                            />
+                                            {img.category === 'legs' && (
+                                                <span className="thumb-badge">
+                                                    <GiBathtub />
+                                                </span>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Информация */}
+                        <div className="product-details">
+                            <h1 className="product-name">{product.name}</h1>
+
+                            <div className="product-meta">
+                                <div className="meta-item">
+                                    <span className="label">Бренд:</span>
+                                    <span className="value">{brandName}</span>
+                                </div>
+                                <div className="meta-item">
+                                    <span className="label">Категория:</span>
+                                    <span className="value">{product.category}</span>
+                                </div>
+                                <div className="meta-item">
+                                    <span className="label">Наличие:</span>
+                                    <span className={`stock ${product.inStock ? 'in' : 'out'}`}>
+                                        {product.inStock ? 'В наличии' : 'Под заказ'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Основные характеристики */}
+                            {mainSpecs.length > 0 && (
+                                <div className="product-highlights">
+                                    {mainSpecs.map((spec, index) => (
+                                        <div key={index} className="highlight-item">
+                                            <FiCheckCircle className="highlight-icon" />
+                                            <div className="highlight-content">
+                                                <span className="highlight-label">{spec.label}:</span>
+                                                <span className="highlight-value">
+                                                    {formatValue(spec.value)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Выбор цвета ножек для ванн */}
+                            {legColorOptions.length > 0 && (
+                                <div className="product-options-section">
+                                    <h3 className="options-title">Цвет ножек</h3>
+                                    <div className="leg-colors-grid">
+                                        {legColorOptions.map((leg, index) => (
+                                            <button
+                                                key={index}
+                                                className={`leg-color-btn ${selectedLegColor?.color === leg.color ? 'active' : ''}`}
+                                                onClick={() => handleLegColorSelect(leg)}
+                                            >
+                                                <span
+                                                    className="leg-color-preview"
+                                                    style={{ background: getColorHex(leg.color) }}
+                                                />
+                                                <span className="leg-color-name">{leg.color}</span>
+                                                {leg.url && <FiImage className="leg-color-icon" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Информация о покупке */}
+                            <div className="purchase-info">
+                                <div className="purchase-info-item">
+                                    <FiInfo className="purchase-info-icon" />
+                                    <span>Товар продается поштучно</span>
+                                </div>
+                                <div className="purchase-info-item">
+                                    <FiCheckCircle className="purchase-info-icon" />
+                                    <span>Минимальный заказ: 1 шт.</span>
+                                </div>
+                            </div>
+
+                            {/* Табы с подробной информацией */}
+                            <div className="product-tabs">
+                                <div className="tabs-header">
+                                    <button
+                                        className={`tab-btn ${activeTab === 'specs' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('specs')}
+                                    >
+                                        <FiPackage className="tab-icon" />
+                                        Характеристики
+                                    </button>
+                                    <button
+                                        className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('description')}
+                                    >
+                                        <FiBox className="tab-icon" />
+                                        Описание
+                                    </button>
+                                    <button
+                                        className={`tab-btn ${activeTab === 'delivery' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('delivery')}
+                                    >
+                                        <FiTruck className="tab-icon" />
+                                        Доставка
+                                    </button>
+                                </div>
+
+                                <div className="tab-content">
+                                    {activeTab === 'specs' && (
+                                        <div className="specs-container">
+                                            {getAllSpecs.map((spec, index) => (
+                                                <div key={index} className="spec-block">
+                                                    <div className="spec-block-label">
+                                                        <FiCpu className="spec-block-icon" />
+                                                        {spec.label}
+                                                    </div>
+                                                    <div className="spec-block-value">
+                                                        {renderValue(spec.value, spec.type)}
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {/* Отдельно показываем цвета ножек, если они есть */}
+                                            {legColorOptions.length > 0 && (
+                                                <div className="spec-block">
+                                                    <div className="spec-block-label">
+                                                        <FiCpu className="spec-block-icon" />
+                                                        Цвета ножек
+                                                    </div>
+                                                    <div className="spec-block-value">
+                                                        <div className="leg-colors-list">
+                                                            {legColorOptions.map((leg, idx) => (
+                                                                <span key={idx} className="leg-color-tag">
+                                                                    <span
+                                                                        className="leg-color-dot"
+                                                                        style={{ background: getColorHex(leg.color) }}
+                                                                    />
+                                                                    {leg.color}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'description' && (
+                                        <div className="description-content">
+                                            <p className="description-text">
+                                                {product.description || `Качественный товар от бренда ${brandName}. Идеально подходит для вашего дома.`}
+                                            </p>
+                                            <div className="features-grid">
+                                                <div className="feature-card">
+                                                    <FiCheckCircle className="feature-icon" />
+                                                    <span>Премиум качество</span>
+                                                </div>
+                                                <div className="feature-card">
+                                                    <FiCheckCircle className="feature-icon" />
+                                                    <span>Надежный бренд</span>
+                                                </div>
+                                                <div className="feature-card">
+                                                    <FiCheckCircle className="feature-icon" />
+                                                    <span>Гарантия качества</span>
+                                                </div>
+                                                <div className="feature-card">
+                                                    <FiCheckCircle className="feature-icon" />
+                                                    <span>Бесплатная доставка</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'delivery' && (
+                                        <div className="delivery-content">
+                                            <div className="delivery-block">
+                                                <FiTruck className="delivery-icon" />
+                                                <div>
+                                                    <h4>Доставка по Самарканду</h4>
+                                                    <p>Бесплатно при заказе от 1 000 000 сум</p>
+                                                    <p className="small">Доставка в день заказа при наличии</p>
+                                                </div>
+                                            </div>
+                                            <div className="delivery-block">
+                                                <FiCreditCard className="delivery-icon" />
+                                                <div>
+                                                    <h4>Способы оплаты</h4>
+                                                    <p>Наличные, карта, рассрочка, безналичный расчет</p>
+                                                </div>
+                                            </div>
+                                            <div className="delivery-block">
+                                                <FiShield className="delivery-icon" />
+                                                <div>
+                                                    <h4>Гарантия качества</h4>
+                                                    <p>Официальная гарантия на всю продукцию</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Кнопка добавления в корзину */}
+                            <div className="product-actions">
+                                <button
+                                    className="btn btn-primary add-to-cart"
+                                    onClick={handleAddToCart}
+                                    disabled={!product.inStock}
+                                >
+                                    <FiShoppingCart />
+                                    {product.inStock ? 'Добавить в корзину' : 'Под заказ'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Похожие товары */}
+                    {relatedProducts.length > 0 && (
+                        <div className="related">
+                            <h2 className="section-title">Похожие товары</h2>
+                            <div className="related-grid">
+                                {relatedProducts.map(item => (
+                                    <Link href={`/product/${item.id}`} key={item.id} className="related-item">
+                                        <div className="related-image">
+                                            <img src={item.image} alt={item.name} />
+                                            {!item.inStock && (
+                                                <span className="related-badge">Под заказ</span>
+                                            )}
+                                        </div>
+                                        <div className="related-info">
+                                            <h4>{item.name}</h4>
+                                            <div className="related-specs">
+                                                <span className="related-spec">Бренд: {item.brand}</span>
+                                                <span className="related-spec">{item.category}</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </main>
+            <Footer />
+        </>
+    );
+};

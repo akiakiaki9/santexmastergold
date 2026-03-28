@@ -1,0 +1,526 @@
+'use client'
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import {
+    FiSearch,
+    FiShoppingCart,
+    FiMenu,
+    FiX,
+    FiPhone,
+    FiClock,
+    FiAward,
+    FiChevronDown,
+    FiUsers,
+    FiMapPin,
+    FiUser
+} from 'react-icons/fi';
+import { brands, products } from '@/app/utils/data1';
+import { useCart } from '@/app/context/CartContext';
+import './navbar.css';
+
+// Функция для создания слага из названия бренда
+const createSlug = (name) => {
+    return name
+        .toLowerCase()
+        .replace(/[&]/g, 'and')
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, '-');
+};
+
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [showResults, setShowResults] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState(false);
+    const [activePhones, setActivePhones] = useState(false);
+    const [showPhonesModal, setShowPhonesModal] = useState(false);
+    const [showDealersModal, setShowDealersModal] = useState(false);
+    const [dropdownTimeout, setDropdownTimeout] = useState(null);
+    const [phonesTimeout, setPhonesTimeout] = useState(null);
+    const searchRef = useRef(null);
+    const dropdownRef = useRef(null);
+    const phonesRef = useRef(null);
+    const menuRef = useRef(null);
+    const router = useRouter();
+    const { cartCount } = useCart();
+
+    // Данные дилеров
+    const dealers = [
+        {
+            id: 1,
+            region: 'Navoiy viloyati',
+            phone: '+998907394437',
+            formattedPhone: '+998 90 739-44-37',
+            name: 'Shuxrat aka',
+            icon: <FiUser />
+        },
+        {
+            id: 2,
+            region: 'Buxoro viloyati',
+            phone: '+998919266789',
+            formattedPhone: '+998 91 926-67-89',
+            name: 'Doston',
+            icon: <FiUser />
+        },
+        {
+            id: 3,
+            region: 'Samarqand viloyati',
+            phone: '+998915307708',
+            formattedPhone: '+998 91 530-77-08',
+            name: 'Jonibek',
+            icon: <FiUser />
+        },
+        {
+            id: 4,
+            region: "Qo'qon shahri",
+            phone: '+998911556555',
+            formattedPhone: '+998 91 155-65-55',
+            name: 'Abdulhamid',
+            icon: <FiUser />
+        },
+        {
+            id: 5,
+            region: "Andijon viloyati",
+            phone: '+998950000112',
+            formattedPhone: '+998 95 000-01-12',
+            name: 'Muhammadumar',
+            icon: <FiUser />
+        },
+    ];
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Закрытие поиска при клике вне
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowResults(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Закрытие модалок при клике вне
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showPhonesModal && !event.target.closest('.phones-modal-content') && !event.target.closest('.mobile-phone-icon-btn')) {
+                setShowPhonesModal(false);
+            }
+            if (showDealersModal && !event.target.closest('.dealers-modal-content') && !event.target.closest('.dealers-trigger') && !event.target.closest('.mobile-dealers-icon-btn')) {
+                setShowDealersModal(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showPhonesModal, showDealersModal]);
+
+    // Закрытие меню при ресайзе
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 992 && isOpen) {
+                setIsOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isOpen]);
+
+    // Блокировка скролла при открытом меню
+    useEffect(() => {
+        if (isOpen || showPhonesModal || showDealersModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, showPhonesModal, showDealersModal]);
+
+    // Используем бренды из data1.js и создаем slug для каждого
+    const brandsList = useMemo(() => {
+        return brands.map(brand => ({
+            name: brand.name,
+            id: brand.id,
+            type: brand.type,
+            slug: createSlug(brand.name)
+        }));
+    }, []);
+
+    const phones = [
+        { name: 'Globalstroy', number: '+998941471116', formatted: '+998 94 147-11-16' },
+        { name: "Qo'yliq", number: '+998977074046', formatted: '+998 97 707-40-46' },
+        { name: 'Jomi bozori', number: '+998974008180', formatted: '+998 97 400-81-80' },
+    ];
+
+    // Поиск по товарам
+    useEffect(() => {
+        if (searchQuery.length > 1) {
+            const results = products.filter(product =>
+                product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                product.brand?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setSearchResults(results.slice(0, 5));
+            setShowResults(true);
+        } else {
+            setSearchResults([]);
+            setShowResults(false);
+        }
+    }, [searchQuery]);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+            setShowResults(false);
+            setSearchQuery('');
+            setIsOpen(false);
+        }
+    };
+
+    const handleProductClick = (productId) => {
+        router.push(`/product/${productId}`);
+        setShowResults(false);
+        setSearchQuery('');
+        setIsOpen(false);
+    };
+
+    const closeMenu = () => {
+        setIsOpen(false);
+        setActiveDropdown(false);
+        setActivePhones(false);
+    };
+
+    // Обработчики для дропдауна с задержкой
+    const handleMouseEnter = (setter) => {
+        return () => {
+            if (dropdownTimeout) {
+                clearTimeout(dropdownTimeout);
+                setDropdownTimeout(null);
+            }
+            if (phonesTimeout) {
+                clearTimeout(phonesTimeout);
+                setPhonesTimeout(null);
+            }
+            setter(true);
+        };
+    };
+
+    const handleMouseLeave = (setter, timeoutSetter) => {
+        return () => {
+            const timeout = setTimeout(() => {
+                setter(false);
+            }, 300);
+            timeoutSetter(timeout);
+        };
+    };
+
+    return (
+        <>
+            {/* Верхний бар - всегда в потоке документа */}
+            <div className="navbar-top">
+                <div className="container">
+                    <div className="navbar-top-inner">
+                        <div className="contact-info">
+                            <FiPhone className="icon" />
+                            <a href="tel:+998981102255" className="phone-link">
+                                +998 98 110-22-55
+                            </a>
+                        </div>
+                        <div className="years-badge">
+                            <FiClock className="icon" />
+                            <span>9:00 - 20:00 ежедневно</span>
+                        </div>
+                        <div className="premium-badge">
+                            <FiAward className="icon" />
+                            <a href="tel:+998915452255" className="phone-link">
+                                +998 91 545-22-55
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Основной навбар - фиксированный */}
+            <nav className={`navbar-main ${scrolled ? 'scrolled' : ''}`}>
+                <div className="container">
+                    <div className="navbar-main-inner">
+                        <Link href="/" className="logo" onClick={closeMenu}>
+                            <div className="logo-wrapper">
+                                <Image
+                                    src="/images/logo.png"
+                                    alt="Debora Ceramica"
+                                    width={70}
+                                    height={70}
+                                    priority
+                                    className="logo-image"
+                                />
+                            </div>
+                            <span className="logo-text">Santex Master Gold</span>
+                        </Link>
+
+                        {/* Десктоп меню - бренды вместо категорий */}
+                        <ul className={`nav-menu ${isOpen ? 'active' : ''}`} ref={menuRef}>
+                            <li className="nav-item">
+                                <Link href="/" onClick={closeMenu}>
+                                    Главная
+                                </Link>
+                            </li>
+                            <li
+                                className={`nav-item dropdown ${activeDropdown ? 'active' : ''}`}
+                                onMouseEnter={handleMouseEnter(setActiveDropdown)}
+                                onMouseLeave={handleMouseLeave(setActiveDropdown, setDropdownTimeout)}
+                                ref={dropdownRef}
+                            >
+                                <Link href="/catalog" className="dropdown-trigger" onClick={closeMenu}>
+                                    Каталог
+                                    <FiChevronDown className="dropdown-arrow" />
+                                </Link>
+                                <div className={`dropdown-menu ${activeDropdown ? 'show' : ''}`}>
+                                    {brandsList.map(brand => (
+                                        <Link
+                                            key={brand.id}
+                                            href={`/catalog/${brand.slug}`}
+                                            className="dropdown-item"
+                                            onClick={closeMenu}
+                                        >
+                                            {brand.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/contacts" onClick={closeMenu}>
+                                    Контакты
+                                </Link>
+                            </li>
+                        </ul>
+
+                        {/* Поиск и корзина */}
+                        <div className="nav-actions">
+                            {/* Кнопка дилеров - ДЛЯ ПК */}
+                            <button
+                                className="dealers-pc-btn"
+                                onClick={() => setShowDealersModal(true)}
+                                aria-label="Дилеры"
+                            >
+                                <FiUsers className="dealers-pc-icon" />
+                                <span className="dealers-pc-text">Дилеры</span>
+                            </button>
+
+                            {/* Телефоны - десктоп версия */}
+                            <div
+                                className="phones-wrapper desktop-only"
+                                onMouseEnter={handleMouseEnter(setActivePhones)}
+                                onMouseLeave={handleMouseLeave(setActivePhones, setPhonesTimeout)}
+                                ref={phonesRef}
+                            >
+                                <button className="phones-trigger">
+                                    <FiPhone className="phones-icon" />
+                                    <span className="phones-text">Телефоны</span>
+                                    <FiChevronDown className={`phones-arrow ${activePhones ? 'active' : ''}`} />
+                                </button>
+                                <div className={`phones-dropdown ${activePhones ? 'show' : ''}`}>
+                                    {phones.map((phone, index) => (
+                                        <a
+                                            key={index}
+                                            href={`tel:${phone.number}`}
+                                            className="phone-item"
+                                        >
+                                            <span className="phone-name">{phone.name}</span>
+                                            <span className="phone-number">{phone.formatted}</span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Иконка телефона для мобильных */}
+                            <button
+                                className="mobile-phone-icon-btn"
+                                onClick={() => setShowPhonesModal(true)}
+                                aria-label="Позвонить"
+                            >
+                                <FiPhone />
+                            </button>
+
+                            {/* Иконка дилеров для мобильных */}
+                            <button
+                                className="mobile-dealers-icon-btn"
+                                onClick={() => setShowDealersModal(true)}
+                                aria-label="Дилеры"
+                            >
+                                <FiUsers />
+                            </button>
+
+                            <div className="search-wrapper" ref={searchRef}>
+                                <form onSubmit={handleSearch} className="search-form">
+                                    <input
+                                        type="text"
+                                        placeholder="Поиск..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onFocus={() => searchResults.length > 0 && setShowResults(true)}
+                                        className="search-input"
+                                    />
+                                    <button type="submit" className="search-button" aria-label="Поиск">
+                                        <FiSearch />
+                                    </button>
+                                </form>
+
+                                {/* Результаты поиска */}
+                                {showResults && searchResults.length > 0 && (
+                                    <div className="search-results">
+                                        {searchResults.map(product => (
+                                            <div
+                                                key={product.id}
+                                                className="search-result-item"
+                                                onClick={() => handleProductClick(product.id)}
+                                            >
+                                                <div className="result-image">
+                                                    <img src={product.image} alt={product.name} loading="lazy" />
+                                                </div>
+                                                <div className="result-info">
+                                                    <div className="result-name">{product.name}</div>
+                                                    <div className="result-category">
+                                                        {product.brand}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <div className="search-results-footer">
+                                            <button onClick={handleSearch} className="view-all-button">
+                                                Все результаты ({searchResults.length})
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Link href="/cart" className={`cart-button ${isOpen ? 'mobile-hidden' : ''}`} aria-label="Корзина">
+                                <FiShoppingCart />
+                                {cartCount > 0 && (
+                                    <span className="cart-badge">{cartCount}</span>
+                                )}
+                            </Link>
+
+                            {/* Бургер меню */}
+                            <button
+                                className={`burger-button ${isOpen ? 'active' : ''}`}
+                                onClick={() => setIsOpen(!isOpen)}
+                                aria-label="Меню"
+                                aria-expanded={isOpen}
+                            >
+                                {isOpen ? <FiX /> : <FiMenu />}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            {/* Модальное окно с телефонами для мобильных */}
+            {showPhonesModal && (
+                <div className="phones-modal-overlay" onClick={() => setShowPhonesModal(false)}>
+                    <div className="phones-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="phones-modal-header">
+                            <FiPhone className="phones-modal-icon" />
+                            <h3 className="phones-modal-title">Наши магазины</h3>
+                            <button
+                                className="phones-modal-close"
+                                onClick={() => setShowPhonesModal(false)}
+                            >
+                                <FiX />
+                            </button>
+                        </div>
+                        <div className="phones-modal-body">
+                            {phones.map((phone, index) => (
+                                <a
+                                    key={index}
+                                    href={`tel:${phone.number}`}
+                                    className="phones-modal-item"
+                                    onClick={() => setShowPhonesModal(false)}
+                                >
+                                    <span className="phones-modal-name">{phone.name}</span>
+                                    <span className="phones-modal-number">{phone.formatted}</span>
+                                </a>
+                            ))}
+                        </div>
+                        <div className="phones-modal-footer">
+                            <button
+                                className="phones-modal-btn"
+                                onClick={() => setShowPhonesModal(false)}
+                            >
+                                Закрыть
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Модальное окно с дилерами */}
+            {showDealersModal && (
+                <div className="dealers-modal-overlay" onClick={() => setShowDealersModal(false)}>
+                    <div className="dealers-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="dealers-modal-header">
+                            <FiUsers className="dealers-modal-icon" />
+                            <h3 className="dealers-modal-title">Наши дилеры</h3>
+                            <button
+                                className="dealers-modal-close"
+                                onClick={() => setShowDealersModal(false)}
+                            >
+                                <FiX />
+                            </button>
+                        </div>
+                        <div className="dealers-modal-body">
+                            {dealers.map((dealer) => (
+                                <div key={dealer.id} className="dealer-item">
+                                    <div className="dealer-region">
+                                        <FiMapPin className="dealer-region-icon" />
+                                        <span className="dealer-region-name">{dealer.region}</span>
+                                    </div>
+                                    <div className="dealer-info">
+                                        <div className="dealer-name">
+                                            <FiUser className="dealer-name-icon" />
+                                            <span>{dealer.name}</span>
+                                        </div>
+                                        <a
+                                            href={`tel:${dealer.phone}`}
+                                            className="dealer-phone"
+                                            onClick={() => setShowDealersModal(false)}
+                                        >
+                                            <FiPhone className="dealer-phone-icon" />
+                                            {dealer.formattedPhone}
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="dealers-modal-footer">
+                            <button
+                                className="dealers-modal-btn"
+                                onClick={() => setShowDealersModal(false)}
+                            >
+                                Закрыть
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Оффсет для фиксированного навбара */}
+            <div className="navbar-offset" />
+        </>
+    );
+};
+
+export default Navbar;

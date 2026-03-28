@@ -1,0 +1,891 @@
+/* Базовые стили */
+.btn-outline {
+    color: #fff !important;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--gold);
+    background: rgba(197, 165, 114, 0.1);
+}
+
+.header {
+    position: relative;
+    width: 100%;
+    background: var(--navy);
+    margin-top: 0;
+    overflow: hidden;
+}
+
+/* Карусель */
+.carousel {
+    position: relative;
+    height: min(800px, 90vh);
+    overflow: hidden;
+    background: var(--navy);
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, visibility;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Фоновое изображение */
+.slide-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    transition: transform 8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.carousel-slide.active .slide-background {
+    transform: scale(1.1);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+            rgba(26, 47, 79, 0.678) 0%,
+            rgba(26, 47, 79, 0.419) 50%,
+            rgba(26, 47, 79, 0.396) 100%);
+    z-index: 1;
+    backdrop-filter: blur(2px);
+}
+
+/* Контейнер */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(15px, 4vw, 40px);
+    height: 100%;
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(30px, 5vw, 60px);
+    align-items: center;
+    height: 100%;
+    padding: clamp(80px, 12vh, 120px) 0 clamp(60px, 8vh, 80px);
+}
+
+/* Информация слайда */
+.slide-info {
+    color: var(--white);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+    will-change: transform, opacity;
+    max-width: 600px;
+}
+
+.carousel-slide.active .slide-info {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--white);
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(10px, 2vw, 15px);
+    border-radius: 30px;
+    margin-bottom: clamp(15px, 3vh, 20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+    box-shadow: 0 4px 15px rgba(197, 165, 114, 0.3);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-subtitle {
+    display: inline-block;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    text-transform: uppercase;
+    letter-spacing: clamp(2px, 0.5vw, 4px);
+    color: var(--gold);
+    margin-bottom: clamp(10px, 2vh, 15px);
+    font-weight: 500;
+    position: relative;
+    padding-left: clamp(10px, 2vw, 15px);
+    animation: fadeInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
+
+.slide-subtitle::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(2px, 0.3vw, 3px);
+    height: clamp(15px, 3vh, 20px);
+    background: var(--gold);
+    border-radius: 3px;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-title {
+    font-size: clamp(2rem, 8vw, 4.2rem);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: clamp(15px, 2vh, 20px);
+    line-height: 1.1;
+    font-family: 'Cormorant Garamond', serif;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+    word-break: break-word;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-description {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    margin-bottom: clamp(20px, 3vh, 25px);
+    opacity: 0.95;
+    line-height: 1.6;
+    max-width: 500px;
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.7s both;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.slide-actions {
+    display: flex;
+    gap: clamp(10px, 2vw, 15px);
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both;
+    flex-wrap: wrap;
+}
+
+.slide-actions .btn {
+    min-width: clamp(140px, 20vw, 160px);
+    text-align: center;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    padding: clamp(10px, 2vh, 12px) clamp(20px, 3vw, 30px);
+}
+
+/* Изображение слайда */
+.slide-image {
+    position: relative;
+    height: clamp(250px, 40vh, 500px);
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+    will-change: transform, opacity;
+    perspective: 1000px;
+}
+
+.carousel-slide.active .slide-image {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: clamp(12px, 2vw, 20px);
+    overflow: hidden;
+    box-shadow: 0 clamp(15px, 4vw, 30px) clamp(30px, 6vw, 60px) rgba(0, 0, 0, 0.5);
+    transform: rotateY(-5deg) rotateX(5deg) scale(0.95);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(197, 165, 114, 0.3);
+}
+
+.image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.7s ease;
+    z-index: 3;
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    .image-wrapper:hover::before {
+        left: 150%;
+    }
+
+    .image-wrapper:hover {
+        transform: rotateY(0) rotateX(0) scale(1);
+        box-shadow: 0 40px 80px rgba(197, 165, 114, 0.3);
+        border-color: var(--gold);
+    }
+
+    .image-wrapper:hover img {
+        transform: scale(1.1);
+    }
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(197, 165, 114, 0.1) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Навигация карусели */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(40px, 6vw, 55px);
+    height: clamp(40px, 6vw, 55px);
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: var(--white);
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (hover: hover) {
+    .carousel-nav:not(:disabled):hover {
+        background: var(--gold);
+        transform: translateY(-50%) scale(1.1);
+        border-color: var(--gold);
+        box-shadow: 0 8px 25px rgba(197, 165, 114, 0.4);
+    }
+}
+
+.carousel-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.carousel-prev {
+    left: clamp(15px, 3vw, 30px);
+}
+
+.carousel-next {
+    right: clamp(15px, 3vw, 30px);
+}
+
+/* Индикаторы */
+.carousel-dots {
+    position: absolute;
+    bottom: clamp(20px, 5vh, 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: clamp(8px, 2vw, 12px);
+    z-index: 10;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 90%;
+}
+
+.dot {
+    width: clamp(8px, 2.5vw, 14px);
+    height: clamp(8px, 2.5vw, 14px);
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.dot::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dot.active {
+    background: var(--gold);
+    transform: scale(1.2);
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold);
+}
+
+.dot.active::after {
+    border-color: var(--gold);
+    transform: scale(1.1);
+}
+
+@media (hover: hover) {
+    .dot:not(:disabled):hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        transform: scale(1.1);
+    }
+}
+
+.dot:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Преимущества */
+.benefits {
+    background: var(--white);
+    padding: clamp(20px, 5vh, 40px) 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 4vw, 40px);
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: clamp(15px, 3vw, 20px);
+    padding: 0 clamp(10px, 2vw, 20px);
+    transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+    .benefit-item:hover {
+        transform: translateY(-5px);
+    }
+}
+
+.benefit-icon {
+    width: clamp(45px, 8vw, 60px);
+    height: clamp(45px, 8vw, 60px);
+    background: var(--cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+@media (hover: hover) {
+    .benefit-item:hover .benefit-icon {
+        background: var(--gold);
+        color: var(--white);
+        transform: rotateY(180deg);
+    }
+}
+
+.benefit-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.benefit-info h3 {
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+    margin-bottom: 5px;
+    color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.benefit-info p {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    color: var(--gray);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+
+/* Десктоп - 1200px и выше */
+@media (min-width: 1200px) {
+    .carousel {
+        height: min(800px, 85vh);
+    }
+    
+    .slide-title {
+        font-size: 4rem;
+    }
+}
+
+/* Ноутбуки - 992px - 1199px */
+@media (max-width: 1199px) and (min-width: 993px) {
+    .carousel {
+        height: min(750px, 85vh);
+    }
+    
+    .slide-title {
+        font-size: 3.5rem;
+    }
+    
+    .slide-image {
+        height: 400px;
+    }
+    
+    .benefits-grid {
+        gap: 20px;
+    }
+}
+
+/* Планшеты - 768px - 992px */
+@media (max-width: 992px) {
+    .carousel {
+        height: min(900px, 90vh);
+    }
+
+    .slide-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: clamp(20px, 5vh, 40px);
+        padding: 80px 0 40px;
+    }
+
+    .slide-info {
+        order: 2;
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .slide-description {
+        margin: 0 auto 20px;
+        max-width: 500px;
+    }
+
+    .slide-subtitle {
+        padding-left: 0;
+    }
+
+    .slide-subtitle::before {
+        display: none;
+    }
+
+    .slide-actions {
+        justify-content: center;
+    }
+
+    .slide-image {
+        order: 1;
+        height: clamp(250px, 35vh, 350px);
+        max-width: 500px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .image-wrapper {
+        transform: rotateY(0) rotateX(0) scale(0.95);
+    }
+
+    @media (hover: hover) {
+        .image-wrapper:hover {
+            transform: scale(1);
+        }
+    }
+
+    .overlay {
+        background: linear-gradient(135deg,
+                rgba(26, 47, 79, 0.678) 0%,
+                rgba(26, 47, 79, 0.396) 100%);
+    }
+
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .benefit-item {
+        justify-content: center;
+    }
+}
+
+/* Мобильные - 576px - 767px */
+@media (max-width: 768px) {
+    .carousel {
+        height: min(850px, 90vh);
+    }
+
+    .slide-title {
+        font-size: clamp(2.2rem, 8vw, 3rem);
+    }
+
+    .slide-description {
+        font-size: 0.95rem;
+        -webkit-line-clamp: 3;
+    }
+
+    .slide-image {
+        height: clamp(200px, 30vh, 280px);
+    }
+
+    .carousel-nav {
+        display: none; /* Скрываем навигационные кнопки на мобильных, используем свайпы */
+    }
+
+    .carousel-dots {
+        bottom: 15px;
+        gap: 8px;
+    }
+
+    .benefits {
+        padding: 20px 0;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .benefit-item {
+        justify-content: flex-start;
+        width: 100%;
+        padding: 10px 15px;
+        background: var(--cream);
+        border-radius: 12px;
+    }
+
+    .benefit-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .benefit-info h3 {
+        font-size: 0.95rem;
+        white-space: normal;
+    }
+
+    .benefit-info p {
+        font-size: 0.8rem;
+        white-space: normal;
+    }
+}
+
+/* Малые мобильные - 480px и ниже */
+@media (max-width: 480px) {
+    .carousel {
+        height: min(800px, 90vh);
+    }
+
+    .slide-title {
+        font-size: clamp(1.8rem, 7vw, 2.4rem);
+    }
+
+    .slide-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+    }
+
+    .slide-description {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        -webkit-line-clamp: 3;
+    }
+
+    .slide-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .slide-actions .btn {
+        width: 100%;
+        min-width: auto;
+        padding: 10px 15px;
+    }
+
+    .slide-image {
+        height: clamp(180px, 25vh, 200px);
+    }
+
+    .slide-badge {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+        margin-bottom: 10px;
+    }
+
+    .carousel-dots {
+        bottom: 10px;
+        gap: 6px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .benefit-item {
+        padding: 8px 12px;
+        gap: 12px;
+    }
+
+    .benefit-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .benefit-info h3 {
+        font-size: 0.9rem;
+    }
+
+    .benefit-info p {
+        font-size: 0.75rem;
+    }
+}
+
+/* Очень малые мобильные - 375px и ниже */
+@media (max-width: 375px) {
+    .carousel {
+        height: min(750px, 90vh);
+    }
+
+    .slide-title {
+        font-size: clamp(1.5rem, 6vw, 1.8rem);
+        margin-bottom: 8px;
+    }
+
+    .slide-description {
+        font-size: 0.85rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .slide-image {
+        height: clamp(150px, 22vh, 180px);
+    }
+
+    .slide-badge {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+
+    .slide-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+
+    .benefit-item {
+        padding: 6px 10px;
+    }
+
+    .benefit-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+
+    .benefit-info h3 {
+        font-size: 0.85rem;
+    }
+
+    .benefit-info p {
+        font-size: 0.7rem;
+    }
+}
+
+/* Анимация загрузки */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.carousel-slide.loading .image-wrapper {
+    background: linear-gradient(90deg, 
+        #e0e0e0 25%, 
+        #f0f0f0 50%, 
+        #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Поддержка reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .carousel-slide.active .slide-background {
+        transform: none;
+    }
+    
+    .image-wrapper:hover {
+        transform: none;
+    }
+}
+
+/* Улучшения для тач-устройств */
+@media (hover: none) and (pointer: coarse) {
+    .carousel-nav {
+        display: none; /* Скрываем кнопки на тач-устройствах */
+    }
+    
+    .image-wrapper {
+        transform: none; /* Убираем 3D эффекты на тач-устройствах */
+    }
+    
+    .benefit-item:active {
+        transform: scale(0.98);
+    }
+    
+    .slide-actions .btn {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .slide-actions .btn:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Оптимизация для landscape ориентации */
+@media (max-height: 600px) and (orientation: landscape) {
+    .carousel {
+        height: 100vh;
+    }
+    
+    .slide-content {
+        padding: 60px 0 30px;
+    }
+    
+    .slide-image {
+        height: 150px;
+    }
+    
+    .slide-title {
+        font-size: clamp(1.5rem, 5vh, 2rem);
+        margin-bottom: 5px;
+    }
+    
+    .slide-description {
+        margin-bottom: 10px;
+        -webkit-line-clamp: 2;
+    }
+    
+    .slide-actions {
+        gap: 8px;
+    }
+    
+    .benefits {
+        display: none; /* Скрываем преимущества в landscape для экономии места */
+    }
+}
+
+/* Улучшения для устройств с высоким DPI */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .image-wrapper {
+        border-width: 1px;
+    }
+    
+    .slide-badge {
+        box-shadow: 0 2px 10px rgba(197, 165, 114, 0.3);
+    }
+}

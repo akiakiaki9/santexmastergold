@@ -1,0 +1,809 @@
+/* catalog.css - Премиум версия (адаптировано под бренды) */
+
+:root {
+    --primary: #C5A572;
+    --primary-dark: #B08C5A;
+    --primary-light: #D4BC94;
+    --secondary: #1A2B3C;
+    --secondary-light: #2C4050;
+    --dark: #1E1E1E;
+    --gray-100: #F8F9FA;
+    --gray-200: #E9ECEF;
+    --gray-300: #DEE2E6;
+    --gray-400: #CED4DA;
+    --gray-500: #ADB5BD;
+    --gray-600: #6C757D;
+    --white: #FFFFFF;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.2);
+    --shadow-gold: 0 10px 25px -5px rgba(197, 165, 114, 0.2);
+    --gradient-gold: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    --gradient-navy: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catalog-preview {
+    padding: 100px 0;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Декоративные элементы */
+.catalog-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Заголовок секции */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    gap: 20px;
+    animation: fadeInUp 0.8s ease;
+}
+
+.section-subtitle {
+    display: inline-block;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--primary);
+    margin-bottom: 12px;
+    font-weight: 500;
+    position: relative;
+}
+
+.section-subtitle::before,
+.section-subtitle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30px;
+    height: 1px;
+    background: var(--primary);
+}
+
+.section-subtitle::before {
+    right: 100%;
+    margin-right: 15px;
+}
+
+.section-subtitle::after {
+    left: 100%;
+    margin-left: 15px;
+}
+
+.section-title {
+    font-size: 3rem;
+    color: var(--secondary);
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.section-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Сетка брендов */
+.brands-grid-premium {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 60px;
+    animation: fadeInUp 0.8s ease 0.1s both;
+}
+
+.brand-card {
+    position: relative;
+    text-decoration: none;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(197, 165, 114, 0.1);
+}
+
+.brand-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary);
+}
+
+.brand-card-image {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+}
+
+.brand-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.brand-card:hover .brand-card-image img {
+    transform: scale(1.1);
+}
+
+.brand-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,
+            rgba(26, 43, 60, 0.2) 0%,
+            rgba(26, 43, 60, 0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.brand-card:hover .brand-card-overlay {
+    opacity: 1;
+}
+
+.brand-card-icon {
+    font-size: 3.5rem;
+    color: var(--white);
+    transform: translateY(20px) scale(0.8);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(197, 165, 114, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(5px);
+}
+
+.brand-card:hover .brand-card-icon {
+    transform: translateY(0) scale(1);
+}
+
+.brand-card-icon svg {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.brand-card-content {
+    padding: 25px 20px;
+    background: var(--white);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.brand-card-title {
+    font-size: 1.3rem;
+    color: var(--secondary);
+    margin: 0 0 8px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    transition: var(--transition);
+}
+
+.brand-card:hover .brand-card-title {
+    color: var(--primary);
+}
+
+.brand-card-type {
+    color: var(--gray-500);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.brand-card-count {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.brand-card-count::before {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: var(--primary);
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.brand-contacts-preview {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.brand-contact-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    background: var(--gray-100);
+    padding: 4px 8px;
+    border-radius: 12px;
+    width: fit-content;
+}
+
+.brand-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-top: auto;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: fit-content;
+}
+
+.brand-card-link span {
+    position: relative;
+}
+
+.brand-card-link span::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--primary);
+    transition: var(--transition);
+}
+
+.brand-card:hover .brand-card-link span::after {
+    width: 100%;
+}
+
+.brand-card-arrow {
+    transition: transform 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.brand-card:hover .brand-card-arrow {
+    transform: translateX(8px);
+}
+
+/* Кнопка каталога */
+.catalog-button-wrapper {
+    text-align: center;
+    margin: 40px 0 80px;
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.catalog-main-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 60px;
+    background: var(--gradient-gold);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-gold);
+    position: relative;
+    overflow: hidden;
+}
+
+.catalog-main-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.catalog-main-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(197, 165, 114, 0.4);
+}
+
+.catalog-main-btn:hover::before {
+    left: 100%;
+}
+
+.catalog-main-btn .btn-icon {
+    transition: transform 0.3s ease;
+}
+
+.catalog-main-btn:hover .btn-icon {
+    transform: translateX(8px);
+}
+
+/* Баннер */
+.premium-banner {
+    background: var(--gradient-navy);
+    border-radius: 30px;
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease 0.3s both;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Декоративные элементы баннера */
+.premium-banner::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    opacity: 0.1;
+    border-radius: 50%;
+    animation: float 10s ease-in-out infinite;
+}
+
+.premium-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    opacity: 0.1;
+    border-radius: 50%;
+    animation: float 12s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(30px, -30px) rotate(5deg);
+    }
+
+    50% {
+        transform: translate(0, -50px) rotate(0deg);
+    }
+
+    75% {
+        transform: translate(-30px, -30px) rotate(-5deg);
+    }
+}
+
+.banner-content {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+    z-index: 1;
+}
+
+.banner-content h3 {
+    font-size: 2.5rem;
+    color: var(--white);
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.banner-content p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 500px;
+    opacity: 0.9;
+}
+
+.banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px;
+    background: var(--primary);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.banner-btn:hover {
+    background: transparent;
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.banner-btn:hover::before {
+    left: 100%;
+}
+
+.banner-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.banner-btn:hover svg {
+    transform: translateX(5px);
+}
+
+.banner-stats {
+    display: flex;
+    gap: 50px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-item {
+    text-align: center;
+    min-width: 120px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary);
+    font-family: 'Playfair Display', serif;
+    line-height: 1;
+    margin-bottom: 8px;
+    animation: countUp 1.5s ease-out;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .brands-grid-premium {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        padding: 0 30px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+
+    .brands-grid-premium {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .premium-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 50px 30px;
+    }
+
+    .banner-content {
+        text-align: center;
+    }
+
+    .banner-content p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .banner-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    .catalog-preview {
+        padding: 60px 0;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .section-actions {
+        width: 100%;
+    }
+
+    .section-actions .pdf-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-subtitle::before,
+    .section-subtitle::after {
+        width: 20px;
+    }
+
+    .brands-grid-premium {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .brand-card-image {
+        height: 200px;
+    }
+
+    .brand-card-content {
+        padding: 20px 15px;
+    }
+
+    .brand-card-title {
+        font-size: 1.1rem;
+    }
+
+    .banner-content h3 {
+        font-size: 2rem;
+    }
+
+    .banner-stats {
+        padding: 20px;
+        gap: 30px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+    }
+
+    .catalog-main-btn {
+        padding: 15px 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+    }
+
+    .brands-grid-premium {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .brand-card-image {
+        height: 180px;
+    }
+
+    .brand-card-content {
+        padding: 15px;
+    }
+
+    .brand-card-title {
+        font-size: 1rem;
+    }
+
+    .brand-card-type {
+        font-size: 0.75rem;
+    }
+
+    .brand-card-count {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+
+    .brand-card-link {
+        font-size: 0.85rem;
+    }
+
+    .brand-card-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .brand-card-icon svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .catalog-main-btn {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        justify-content: center;
+    }
+
+    .premium-banner {
+        padding: 30px 20px;
+    }
+
+    .banner-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .banner-content p {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+
+    .banner-btn {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+    }
+
+    .banner-stats {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .stat-item {
+        min-width: auto;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 375px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .brand-card-image {
+        height: 160px;
+    }
+
+    .brand-card-content {
+        padding: 12px;
+    }
+
+    .banner-content h3 {
+        font-size: 1.3rem;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+    }
+}
+
+/* Оптимизация для слабых устройств */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
