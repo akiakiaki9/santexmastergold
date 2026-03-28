@@ -14,9 +14,6 @@ import {
     FiX,
     FiChevronRight,
     FiSearch,
-    FiStar,
-    FiTruck,
-    FiShield
 } from 'react-icons/fi';
 import { FaTelegram, FaWhatsapp, FaInstagram } from 'react-icons/fa';
 import { useCart } from '@/app/context/CartContext';

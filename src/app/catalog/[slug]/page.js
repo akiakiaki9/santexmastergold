@@ -12,7 +12,6 @@ import {
     FiGlobe,
     FiPhone,
     FiMail,
-    FiMapPin,
     FiClock,
     FiAward,
     FiTruck,
