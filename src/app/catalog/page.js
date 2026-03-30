@@ -6,7 +6,6 @@ import {
     FiGrid,
     FiList,
     FiBox,
-    FiShoppingCart,
     FiGlobe,
     FiPhone,
     FiMail,
@@ -14,9 +13,17 @@ import {
     FiX,
     FiChevronRight,
     FiSearch,
+    FiExternalLink,
+    FiInstagram,
+    FiFacebook,
+    FiYoutube,
+    FiChevronDown,
+    FiShield,
+    FiTruck,
+    FiStar,
+    FiPackage
 } from 'react-icons/fi';
-import { FaTelegram, FaWhatsapp, FaInstagram } from 'react-icons/fa';
-import { useCart } from '@/app/context/CartContext';
+import { FaTelegram, FaWhatsapp } from 'react-icons/fa';
 import Navbar from '@/app/components/navbar/Navbar';
 import Footer from '@/app/components/footer/Footer';
 import { brands, products } from '@/app/utils/data1';
@@ -24,7 +31,7 @@ import './catalog.css';
 
 // Функция для создания слага из названия бренда
 const createSlug = (name) => {
-    if (!name) return ''; 
+    if (!name) return '';
     return name
         .toLowerCase()
         .replace(/[&]/g, 'and')
@@ -40,55 +47,102 @@ const getBrandBySlug = (slug) => {
     return brands.find(brand => createSlug(brand.name) === slug);
 };
 
-// Иконки для социальных сетей
+// Социальные сети иконки
 const socialIcons = {
     'website': <FiGlobe />,
-    'instagram': <FaInstagram />,
+    'instagram': <FiInstagram />,
     'telegram': <FaTelegram />,
-    'facebook': <FiGlobe />,
+    'facebook': <FiFacebook />,
+    'youtube': <FiYoutube />,
     'whatsapp': <FaWhatsapp />
 };
 
-// Компонент карточки товара
-const ProductCard = ({ product, onAddToCart }) => {
+// Названия соцсетей на русском
+const socialNames = {
+    'website': 'Сайт',
+    'instagram': 'Instagram',
+    'telegram': 'Telegram',
+    'facebook': 'Facebook',
+    'youtube': 'YouTube',
+    'whatsapp': 'WhatsApp'
+};
+
+// Описания для брендов
+const brandDescriptions = {
+    'Mercury plast': 'Качественные трубы и фитинги для водоснабжения и отопления. Надежность и долговечность.',
+    'Zegor': 'Современные смесители для кухни и ванной. Немецкое качество по доступным ценам.',
+    'DERYA PLASTIK & DERYA KERAMIKA': 'Премиальная сантехника для вашего дома. Керамика высшего качества.',
+    'Hydro Plast': 'Профессиональные системы трубопроводов для любых задач.',
+    'Climaroom': 'Климатическое оборудование и вентиляция для комфортного микроклимата.',
+    'Fayz Plast': 'Качественные пластиковые бочки и емкости для хранения воды.',
+    'AeMarket': 'Широкий ассортимент товаров для дома: отопление, насосы, электрика и генераторы.'
+};
+
+// Компонент карточки товара (без корзины, с внешними ссылками)
+const ProductCard = ({ product }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
 
+    const hasExternalUrl = product.url && product.url.startsWith('http');
+
+    const content = (
+        <>
+            <div className="product-image-large">
+                {!imageLoaded && !imageError && <div className="image-skeleton" />}
+                {imageError ? (
+                    <div className="image-error">
+                        <FiBox size={48} />
+                    </div>
+                ) : (
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        onLoad={() => setImageLoaded(true)}
+                        onError={() => setImageError(true)}
+                        className={`product-img-large ${imageLoaded ? 'loaded' : 'loading'}`}
+                    />
+                )}
+                {!product.inStock && <span className="product-badge-out">Под заказ</span>}
+                {hasExternalUrl && (
+                    <span className="product-badge-external">
+                        <FiExternalLink /> На сайт
+                    </span>
+                )}
+            </div>
+            <div className="product-info-large">
+                <h3 className="product-name-large">{product.name}</h3>
+                {product.category && (
+                    <p className="product-category-large">{product.category}</p>
+                )}
+                {hasExternalUrl && (
+                    <p className="product-external-note">
+                        <FiExternalLink /> Перейти на сайт поставщика
+                    </p>
+                )}
+            </div>
+        </>
+    );
+
+    if (hasExternalUrl) {
+        return (
+            <div className="product-card-large">
+                <a
+                    href={product.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="product-card-link"
+                >
+                    {content}
+                </a>
+            </div>
+        );
+    }
+
     return (
-        <div className="product-card">
-            <Link href={`/product/${product.id}`} className="product-card-link">
-                <div className="product-image-container">
-                    {!imageLoaded && !imageError && <div className="image-skeleton" />}
-                    {imageError ? (
-                        <div className="image-error">
-                            <FiBox size={32} />
-                        </div>
-                    ) : (
-                        <img
-                            src={product.image}
-                            alt={product.name}
-                            onLoad={() => setImageLoaded(true)}
-                            onError={() => setImageError(true)}
-                            className={`product-img ${imageLoaded ? 'loaded' : 'loading'}`}
-                        />
-                    )}
-                    {product.oldPrice && <span className="product-badge sale">SALE</span>}
-                    {!product.inStock && <span className="product-badge out">Под заказ</span>}
-                </div>
-                <div className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-category">{product.category}</p>
-                    <p className="product-brand">{product.brand}</p>
-                </div>
-            </Link>
-            <button
-                className="add-to-cart-btn"
-                onClick={(e) => onAddToCart(e, product)}
-                disabled={!product.inStock}
-            >
-                <FiShoppingCart />
-                В корзину
-            </button>
+        <div className="product-card-large no-link">
+            <div className="product-card-link-static">
+                {content}
+            </div>
         </div>
     );
 };
@@ -118,17 +172,49 @@ const BrandCard = ({ brand, isActive, onClick }) => {
     );
 };
 
+// Компонент виджета соцсетей
+const BrandSocialWidget = ({ brandInfo }) => {
+    if (!brandInfo?.social_links || brandInfo.social_links.length === 0) return null;
+
+    return (
+        <div className="brand-social-widget">
+            <div className="brand-social-widget-header">
+                <FiPackage className="widget-icon" />
+                <h4>Больше информации в соцсетях</h4>
+            </div>
+            <p className="brand-social-widget-text">
+                Подписывайтесь на {brandInfo.name}, чтобы следить за новинками, акциями и получать подробную информацию о товарах
+            </p>
+            <div className="brand-social-widget-links">
+                {brandInfo.social_links.map((link, index) => (
+                    <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-widget-link"
+                    >
+                        {socialIcons[link.type] || <FiGlobe />}
+                        <span>{socialNames[link.type] || link.type}</span>
+                        <FiExternalLink className="external-icon" />
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 export default function CatalogPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const brandSlug = searchParams.get('brand');
-    const { addToCart } = useCart();
 
     const [viewMode, setViewMode] = useState('grid');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [showBrandsList, setShowBrandsList] = useState(true);
+    const [categoriesOpen, setCategoriesOpen] = useState(true);
 
     // Получаем выбранный бренд из URL
     const selectedBrand = useMemo(() => {
@@ -149,17 +235,12 @@ export default function CatalogPage() {
     const filteredProducts = useMemo(() => {
         let filtered = products;
 
-        // Фильтр по бренду
         if (selectedBrand) {
             filtered = filtered.filter(p => p.brand === selectedBrand.name);
         }
-
-        // Фильтр по категории
         if (selectedCategory !== 'all') {
             filtered = filtered.filter(p => p.category === selectedCategory);
         }
-
-        // Фильтр по поиску
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(p =>
@@ -168,16 +249,20 @@ export default function CatalogPage() {
                 p.brand.toLowerCase().includes(query)
             );
         }
-
         return filtered;
     }, [selectedBrand, selectedCategory, searchQuery]);
 
-    // Получаем статистику по товарам
-    const stats = useMemo(() => {
-        const totalProducts = filteredProducts.length;
-        const inStock = filteredProducts.filter(p => p.inStock !== false).length;
-        return { totalProducts, inStock };
-    }, [filteredProducts]);
+    // Статистика по категориям
+    const categoryStats = useMemo(() => {
+        const stats = {};
+        const sourceProducts = selectedBrand ? products.filter(p => p.brand === selectedBrand.name) : products;
+        sourceProducts.forEach(p => {
+            if (p.category) {
+                stats[p.category] = (stats[p.category] || 0) + 1;
+            }
+        });
+        return stats;
+    }, [selectedBrand]);
 
     // Функция для выбора бренда
     const handleBrandSelect = useCallback((brand) => {
@@ -188,6 +273,7 @@ export default function CatalogPage() {
             params.delete('brand');
         }
         router.push(`/catalog?${params.toString()}`);
+        setSelectedCategory('all');
     }, [router, searchParams]);
 
     // Функция для очистки фильтров
@@ -197,19 +283,6 @@ export default function CatalogPage() {
         handleBrandSelect(null);
     }, [handleBrandSelect]);
 
-    // Функция добавления в корзину
-    const handleAddToCart = useCallback((e, product) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!product.inStock) return;
-        addToCart(product);
-
-        const btn = e.currentTarget;
-        btn.classList.add('clicked');
-        setTimeout(() => btn.classList.remove('clicked'), 200);
-    }, [addToCart]);
-
-    // Блокировка скролла при открытых мобильных фильтрах
     useEffect(() => {
         if (showMobileFilters) {
             document.body.style.overflow = 'hidden';
@@ -282,20 +355,94 @@ export default function CatalogPage() {
                         )}
                     </div>
 
-                    {/* Фильтры и поиск */}
-                    <div className="filters-section">
-                        <div className="filters-header">
-                            <button
-                                className="mobile-filter-btn"
-                                onClick={() => setShowMobileFilters(true)}
-                            >
-                                <FiFilter />
-                                Фильтры
-                                {(selectedCategory !== 'all' || searchQuery) && (
-                                    <span className="filter-count">1</span>
+                    {/* Основной лейаут */}
+                    <div className="catalog-main-layout">
+                        {/* Левая колонка - категории */}
+                        <aside className="catalog-sidebar">
+                            <div className="categories-widget">
+                                <div
+                                    className="categories-header"
+                                    onClick={() => setCategoriesOpen(!categoriesOpen)}
+                                >
+                                    <h3>Категории товаров</h3>
+                                    <FiChevronDown className={`categories-toggle ${categoriesOpen ? 'open' : ''}`} />
+                                </div>
+                                {categoriesOpen && (
+                                    <ul className="categories-list">
+                                        {allCategories.map(cat => (
+                                            <li key={cat}>
+                                                <button
+                                                    className={`category-link ${selectedCategory === cat ? 'active' : ''}`}
+                                                    onClick={() => setSelectedCategory(cat)}
+                                                >
+                                                    {cat === 'all' ? 'Все товары' : cat}
+                                                    {cat !== 'all' && selectedBrand && (
+                                                        <span className="category-count">{categoryStats[cat] || 0}</span>
+                                                    )}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 )}
-                            </button>
+                            </div>
 
+                            {/* Информация о выбранном бренде */}
+                            {selectedBrand && (
+                                <>
+                                    <div className="brand-sidebar-info">
+                                        <h4>О бренде</h4>
+                                        <p>{brandDescriptions[selectedBrand.name] || `${selectedBrand.name} - ${selectedBrand.type}`}</p>
+                                        <div className="brand-features">
+                                            <div className="brand-feature">
+                                                <FiShield />
+                                                <span>Официальная гарантия</span>
+                                            </div>
+                                            <div className="brand-feature">
+                                                <FiTruck />
+                                                <span>Прямые поставки</span>
+                                            </div>
+                                            <div className="brand-feature">
+                                                <FiStar />
+                                                <span>Сертифицировано</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <BrandSocialWidget brandInfo={selectedBrand} />
+                                </>
+                            )}
+                        </aside>
+
+                        {/* Правая колонка - товары */}
+                        <div className="catalog-products-area">
+                            {/* Панель инструментов */}
+                            <div className="products-toolbar">
+                                <div className="results-count">
+                                    <FiPackage className="results-icon" />
+                                    <span>Найдено <strong>{filteredProducts.length}</strong> товаров</span>
+                                    {(selectedCategory !== 'all' || searchQuery) && (
+                                        <button className="clear-category" onClick={clearFilters}>
+                                            <FiX /> Сбросить фильтры
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="view-toggle">
+                                    <button
+                                        className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                                        onClick={() => setViewMode('grid')}
+                                    >
+                                        <FiGrid />
+                                    </button>
+                                    <button
+                                        className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                                        onClick={() => setViewMode('list')}
+                                    >
+                                        <FiList />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Поиск */}
                             <div className="search-box">
                                 <FiSearch className="search-icon" />
                                 <input
@@ -305,138 +452,40 @@ export default function CatalogPage() {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                                 {searchQuery && (
-                                    <button
-                                        className="clear-search"
-                                        onClick={() => setSearchQuery('')}
-                                    >
+                                    <button className="clear-search" onClick={() => setSearchQuery('')}>
                                         <FiX />
                                     </button>
                                 )}
                             </div>
-                        </div>
 
-                        {/* Десктопные фильтры по категориям */}
-                        <div className="category-filters desktop-only">
-                            {allCategories.map(cat => (
-                                <button
-                                    key={cat}
-                                    className={`category-btn ${selectedCategory === cat ? 'active' : ''}`}
-                                    onClick={() => setSelectedCategory(cat)}
-                                >
-                                    {cat === 'all' ? 'Все товары' : cat}
-                                    {cat !== 'all' && (
-                                        <span className="category-count">
-                                            {products.filter(p => p.category === cat).length}
-                                        </span>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Результаты */}
-                    <div className="results-section">
-                        <div className="results-toolbar">
-                            <div className="results-info">
-                                <strong>{stats.totalProducts}</strong> товаров найдено
-                                {selectedBrand && (
-                                    <span className="filter-badge">
-                                        Бренд: {selectedBrand.name}
-                                        <button onClick={() => handleBrandSelect(null)}>
-                                            <FiX />
-                                        </button>
-                                    </span>
-                                )}
-                                {selectedCategory !== 'all' && (
-                                    <span className="filter-badge">
-                                        Категория: {selectedCategory}
-                                        <button onClick={() => setSelectedCategory('all')}>
-                                            <FiX />
-                                        </button>
-                                    </span>
-                                )}
-                                {searchQuery && (
-                                    <span className="filter-badge">
-                                        Поиск: {searchQuery}
-                                        <button onClick={() => setSearchQuery('')}>
-                                            <FiX />
-                                        </button>
-                                    </span>
-                                )}
-                            </div>
-
-                            <div className="view-toggle">
-                                <button
-                                    className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                                    onClick={() => setViewMode('grid')}
-                                >
-                                    <FiGrid />
-                                </button>
-                                <button
-                                    className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                                    onClick={() => setViewMode('list')}
-                                >
-                                    <FiList />
-                                </button>
-                            </div>
-                        </div>
-
-                        {filteredProducts.length === 0 ? (
-                            <div className="no-results">
-                                <FiBox size={48} />
-                                <h3>Товары не найдены</h3>
-                                <p>Попробуйте изменить параметры фильтрации</p>
-                                <button onClick={clearFilters} className="reset-filters-btn">
-                                    Сбросить все фильтры
-                                </button>
-                            </div>
-                        ) : (
-                            <div className={`products-${viewMode}`}>
-                                {filteredProducts.map(product => (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                        onAddToCart={handleAddToCart}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Информация о выбранном бренде */}
-                    {selectedBrand && (
-                        <div className="brand-info-section">
-                            <div className="brand-info-card">
-                                <h3>О бренде {selectedBrand.name}</h3>
-                                <p>{brandDescriptions[selectedBrand.name] || `${selectedBrand.name} - ${selectedBrand.type}`}</p>
-
-                                {selectedBrand.contacts && selectedBrand.contacts.length > 0 && (
-                                    <div className="brand-contacts">
-                                        {selectedBrand.contacts[0].phone && (
-                                            <a href={`tel:${selectedBrand.contacts[0].phone}`}>
-                                                <FiPhone /> {selectedBrand.contacts[0].phone}
-                                            </a>
-                                        )}
-                                        {selectedBrand.contacts[0].email && (
-                                            <a href={`mailto:${selectedBrand.contacts[0].email}`}>
-                                                <FiMail /> {selectedBrand.contacts[0].email}
-                                            </a>
-                                        )}
-                                    </div>
-                                )}
-
-                                {selectedBrand.social_links && selectedBrand.social_links.length > 0 && (
-                                    <div className="brand-social">
-                                        {selectedBrand.social_links.map((link, i) => (
-                                            <a key={i} href={link.url} target="_blank" rel="noopener noreferrer">
-                                                {socialIcons[link.type] || <FiGlobe />}
-                                            </a>
+                            {/* Товары */}
+                            {filteredProducts.length === 0 ? (
+                                <div className="no-products">
+                                    <FiBox size={64} />
+                                    <h3>Нет товаров в этой категории</h3>
+                                    <p>Попробуйте изменить параметры фильтрации</p>
+                                    <button onClick={clearFilters} className="reset-filters-btn">
+                                        Сбросить все фильтры
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className={`products-${viewMode === 'grid' ? 'grid-large' : 'list-large'}`}>
+                                        {filteredProducts.map(product => (
+                                            <ProductCard key={product.id} product={product} />
                                         ))}
                                     </div>
-                                )}
-                            </div>
+
+                                    {/* Виджет соцсетей под товарами (для мобильных) */}
+                                    {selectedBrand && (
+                                        <div className="brand-social-widget-mobile">
+                                            <BrandSocialWidget brandInfo={selectedBrand} />
+                                        </div>
+                                    )}
+                                </>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
             </main>
 
@@ -445,27 +494,24 @@ export default function CatalogPage() {
                 <div className="mobile-filters-overlay" onClick={() => setShowMobileFilters(false)}>
                     <div className="mobile-filters-panel" onClick={e => e.stopPropagation()}>
                         <div className="mobile-filters-header">
-                            <h3>Фильтры</h3>
+                            <h3>Категории</h3>
                             <button onClick={() => setShowMobileFilters(false)}>
                                 <FiX />
                             </button>
                         </div>
                         <div className="mobile-filters-content">
-                            <div className="mobile-filter-group">
-                                <h4>Категории</h4>
-                                {allCategories.map(cat => (
-                                    <button
-                                        key={cat}
-                                        className={`mobile-category-item ${selectedCategory === cat ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setSelectedCategory(cat);
-                                            setShowMobileFilters(false);
-                                        }}
-                                    >
-                                        {cat === 'all' ? 'Все товары' : cat}
-                                    </button>
-                                ))}
-                            </div>
+                            {allCategories.map(cat => (
+                                <button
+                                    key={cat}
+                                    className={`mobile-category-item ${selectedCategory === cat ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setSelectedCategory(cat);
+                                        setShowMobileFilters(false);
+                                    }}
+                                >
+                                    {cat === 'all' ? 'Все товары' : cat}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -475,14 +521,3 @@ export default function CatalogPage() {
         </>
     );
 }
-
-// Описания для брендов
-const brandDescriptions = {
-    'Mercury plast': 'Качественные трубы и фитинги для водоснабжения и отопления. Надежность и долговечность.',
-    'Zegor': 'Современные смесители для кухни и ванной. Немецкое качество по доступным ценам.',
-    'DERYA PLASTIK & DERYA KERAMIKA': 'Премиальная сантехника для вашего дома. Керамика высшего качества.',
-    'Hydro Plast': 'Профессиональные системы трубопроводов для любых задач.',
-    'Climaroom': 'Климатическое оборудование и вентиляция для комфортного микроклимата.',
-    'Fayz Plast': 'Качественные пластиковые бочки и емкости для хранения воды.',
-    'AeMarket': 'Широкий ассортимент товаров для дома: отопление, насосы, электрика и генераторы.'
-};

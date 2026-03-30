@@ -807,3 +807,216 @@
         scroll-behavior: auto !important;
     }
 }
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ========== */
+
+/* Описание секции */
+.section-description {
+    font-size: 1rem;
+    color: var(--gray-600);
+    max-width: 600px;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .section-description {
+        font-size: 0.9rem;
+    }
+}
+
+/* Секция статистики */
+.stats-section {
+    margin: 40px 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.stat-card-icon {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.stat-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-card-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary);
+    font-family: 'Playfair Display', serif;
+}
+
+.stat-card-label {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 15px;
+    }
+    
+    .stat-card-icon {
+        margin-bottom: 0;
+    }
+    
+    .stat-card-info {
+        flex: 1;
+    }
+}
+
+/* Обновленный баннер */
+.premium-banner {
+    background: var(--gradient-navy);
+    border-radius: 30px;
+    padding: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.banner-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.banner-contacts {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.banner-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    border: 1px solid rgba(197, 165, 114, 0.3);
+}
+
+.banner-phone:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+.banner-social {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.banner-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.banner-social-link:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+    .premium-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 25px;
+    }
+    
+    .banner-contacts,
+    .banner-social {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .premium-banner {
+        padding: 30px 20px;
+    }
+    
+    .banner-contacts {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .banner-phone {
+        justify-content: center;
+    }
+    
+    .banner-social {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .banner-social-link {
+        justify-content: center;
+    }
+}

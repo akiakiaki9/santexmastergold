@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
     FiSearch,
-    FiShoppingCart,
     FiMenu,
     FiX,
     FiPhone,
@@ -13,15 +12,16 @@ import {
     FiAward,
     FiChevronDown,
     FiUsers,
-    FiMapPin,
-    FiUser
+    FiBox,
+    FiMail,
+    FiChevronRight
 } from 'react-icons/fi';
 import { brands, products } from '@/app/utils/data1';
-import { useCart } from '@/app/context/CartContext';
 import './navbar.css';
 
 // Функция для создания слага из названия бренда
 const createSlug = (name) => {
+    if (!name) return '';
     return name
         .toLowerCase()
         .replace(/[&]/g, 'and')
@@ -36,61 +36,26 @@ const Navbar = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(false);
-    const [activePhones, setActivePhones] = useState(false);
     const [showPhonesModal, setShowPhonesModal] = useState(false);
-    const [showDealersModal, setShowDealersModal] = useState(false);
+    const [showSuppliersModal, setShowSuppliersModal] = useState(false);
     const [dropdownTimeout, setDropdownTimeout] = useState(null);
-    const [phonesTimeout, setPhonesTimeout] = useState(null);
     const searchRef = useRef(null);
     const dropdownRef = useRef(null);
-    const phonesRef = useRef(null);
     const menuRef = useRef(null);
     const router = useRouter();
-    const { cartCount } = useCart();
 
-    // Данные дилеров
-    const dealers = [
-        {
-            id: 1,
-            region: 'Navoiy viloyati',
-            phone: '+998907394437',
-            formattedPhone: '+998 90 739-44-37',
-            name: 'Shuxrat aka',
-            icon: <FiUser />
-        },
-        {
-            id: 2,
-            region: 'Buxoro viloyati',
-            phone: '+998919266789',
-            formattedPhone: '+998 91 926-67-89',
-            name: 'Doston',
-            icon: <FiUser />
-        },
-        {
-            id: 3,
-            region: 'Samarqand viloyati',
-            phone: '+998915307708',
-            formattedPhone: '+998 91 530-77-08',
-            name: 'Jonibek',
-            icon: <FiUser />
-        },
-        {
-            id: 4,
-            region: "Qo'qon shahri",
-            phone: '+998911556555',
-            formattedPhone: '+998 91 155-65-55',
-            name: 'Abdulhamid',
-            icon: <FiUser />
-        },
-        {
-            id: 5,
-            region: "Andijon viloyati",
-            phone: '+998950000112',
-            formattedPhone: '+998 95 000-01-12',
-            name: 'Muhammadumar',
-            icon: <FiUser />
-        },
-    ];
+    // Данные поставщиков (бренды с фото)
+    const suppliers = useMemo(() => {
+        return brands.map(brand => ({
+            id: brand.id,
+            name: brand.name || '',
+            type: brand.type || '',
+            image: brand.image,
+            slug: createSlug(brand.name),
+            phone: brand.contacts?.[0]?.phone || null,
+            email: brand.contacts?.[0]?.email || null
+        }));
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -117,13 +82,13 @@ const Navbar = () => {
             if (showPhonesModal && !event.target.closest('.phones-modal-content') && !event.target.closest('.mobile-phone-icon-btn')) {
                 setShowPhonesModal(false);
             }
-            if (showDealersModal && !event.target.closest('.dealers-modal-content') && !event.target.closest('.dealers-trigger') && !event.target.closest('.mobile-dealers-icon-btn')) {
-                setShowDealersModal(false);
+            if (showSuppliersModal && !event.target.closest('.suppliers-modal-content') && !event.target.closest('.mobile-suppliers-icon-btn')) {
+                setShowSuppliersModal(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [showPhonesModal, showDealersModal]);
+    }, [showPhonesModal, showSuppliersModal]);
 
     // Закрытие меню при ресайзе
     useEffect(() => {
@@ -138,7 +103,7 @@ const Navbar = () => {
 
     // Блокировка скролла при открытом меню
     useEffect(() => {
-        if (isOpen || showPhonesModal || showDealersModal) {
+        if (isOpen || showPhonesModal || showSuppliersModal) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -146,32 +111,39 @@ const Navbar = () => {
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen, showPhonesModal, showDealersModal]);
+    }, [isOpen, showPhonesModal, showSuppliersModal]);
 
     // Используем бренды из data1.js и создаем slug для каждого
     const brandsList = useMemo(() => {
         return brands.map(brand => ({
-            name: brand.name,
+            name: brand.name || '',
             id: brand.id,
-            type: brand.type,
+            type: brand.type || '',
             slug: createSlug(brand.name)
         }));
     }, []);
 
-    const phones = [
-        { name: 'Globalstroy', number: '+998941471116', formatted: '+998 94 147-11-16' },
-        { name: "Qo'yliq", number: '+998977074046', formatted: '+998 97 707-40-46' },
-        { name: 'Jomi bozori', number: '+998974008180', formatted: '+998 97 400-81-80' },
-    ];
-
-    // Поиск по товарам
+    // Поиск по товарам и брендам с защитой от undefined
     useEffect(() => {
         if (searchQuery.length > 1) {
-            const results = products.filter(product =>
-                product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                product.brand?.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-            setSearchResults(results.slice(0, 5));
+            const query = searchQuery.toLowerCase();
+            
+            // Поиск по товарам с проверкой на существование полей
+            const productResults = products.filter(product => {
+                const name = product.name ? product.name.toLowerCase() : '';
+                const brand = product.brand ? product.brand.toLowerCase() : '';
+                const category = product.category ? product.category.toLowerCase() : '';
+                return name.includes(query) || brand.includes(query) || category.includes(query);
+            }).slice(0, 5);
+            
+            // Поиск по брендам с проверкой на существование полей
+            const brandResults = brands.filter(brand => {
+                const name = brand.name ? brand.name.toLowerCase() : '';
+                const type = brand.type ? brand.type.toLowerCase() : '';
+                return name.includes(query) || type.includes(query);
+            }).slice(0, 3);
+            
+            setSearchResults([...productResults, ...brandResults]);
             setShowResults(true);
         } else {
             setSearchResults([]);
@@ -189,8 +161,12 @@ const Navbar = () => {
         }
     };
 
-    const handleProductClick = (productId) => {
-        router.push(`/product/${productId}`);
+    const handleResultClick = (item, type) => {
+        if (type === 'product' && item.id) {
+            router.push(`/product/${item.id}`);
+        } else if (type === 'brand' && item.name) {
+            router.push(`/catalog/${createSlug(item.name)}`);
+        }
         setShowResults(false);
         setSearchQuery('');
         setIsOpen(false);
@@ -199,31 +175,22 @@ const Navbar = () => {
     const closeMenu = () => {
         setIsOpen(false);
         setActiveDropdown(false);
-        setActivePhones(false);
     };
 
     // Обработчики для дропдауна с задержкой
-    const handleMouseEnter = (setter) => {
-        return () => {
-            if (dropdownTimeout) {
-                clearTimeout(dropdownTimeout);
-                setDropdownTimeout(null);
-            }
-            if (phonesTimeout) {
-                clearTimeout(phonesTimeout);
-                setPhonesTimeout(null);
-            }
-            setter(true);
-        };
+    const handleMouseEnter = () => {
+        if (dropdownTimeout) {
+            clearTimeout(dropdownTimeout);
+            setDropdownTimeout(null);
+        }
+        setActiveDropdown(true);
     };
 
-    const handleMouseLeave = (setter, timeoutSetter) => {
-        return () => {
-            const timeout = setTimeout(() => {
-                setter(false);
-            }, 300);
-            timeoutSetter(timeout);
-        };
+    const handleMouseLeave = () => {
+        const timeout = setTimeout(() => {
+            setActiveDropdown(false);
+        }, 300);
+        setDropdownTimeout(timeout);
     };
 
     return (
@@ -260,7 +227,7 @@ const Navbar = () => {
                             <div className="logo-wrapper">
                                 <Image
                                     src="/images/logo.png"
-                                    alt="Debora Ceramica"
+                                    alt="Santex Master Gold"
                                     width={70}
                                     height={70}
                                     priority
@@ -270,7 +237,7 @@ const Navbar = () => {
                             <span className="logo-text">Santex Master Gold</span>
                         </Link>
 
-                        {/* Десктоп меню - бренды вместо категорий */}
+                        {/* Десктоп меню */}
                         <ul className={`nav-menu ${isOpen ? 'active' : ''}`} ref={menuRef}>
                             <li className="nav-item">
                                 <Link href="/" onClick={closeMenu}>
@@ -279,8 +246,8 @@ const Navbar = () => {
                             </li>
                             <li
                                 className={`nav-item dropdown ${activeDropdown ? 'active' : ''}`}
-                                onMouseEnter={handleMouseEnter(setActiveDropdown)}
-                                onMouseLeave={handleMouseLeave(setActiveDropdown, setDropdownTimeout)}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                                 ref={dropdownRef}
                             >
                                 <Link href="/catalog" className="dropdown-trigger" onClick={closeMenu}>
@@ -307,43 +274,17 @@ const Navbar = () => {
                             </li>
                         </ul>
 
-                        {/* Поиск и корзина */}
+                        {/* Поиск и действия */}
                         <div className="nav-actions">
-                            {/* Кнопка дилеров - ДЛЯ ПК */}
+                            {/* Кнопка поставщиков - ДЛЯ ПК */}
                             <button
-                                className="dealers-pc-btn"
-                                onClick={() => setShowDealersModal(true)}
-                                aria-label="Дилеры"
+                                className="suppliers-pc-btn"
+                                onClick={() => setShowSuppliersModal(true)}
+                                aria-label="Поставщики"
                             >
-                                <FiUsers className="dealers-pc-icon" />
-                                <span className="dealers-pc-text">Дилеры</span>
+                                <FiUsers className="suppliers-pc-icon" />
+                                <span className="suppliers-pc-text">Поставщики</span>
                             </button>
-
-                            {/* Телефоны - десктоп версия */}
-                            <div
-                                className="phones-wrapper desktop-only"
-                                onMouseEnter={handleMouseEnter(setActivePhones)}
-                                onMouseLeave={handleMouseLeave(setActivePhones, setPhonesTimeout)}
-                                ref={phonesRef}
-                            >
-                                <button className="phones-trigger">
-                                    <FiPhone className="phones-icon" />
-                                    <span className="phones-text">Телефоны</span>
-                                    <FiChevronDown className={`phones-arrow ${activePhones ? 'active' : ''}`} />
-                                </button>
-                                <div className={`phones-dropdown ${activePhones ? 'show' : ''}`}>
-                                    {phones.map((phone, index) => (
-                                        <a
-                                            key={index}
-                                            href={`tel:${phone.number}`}
-                                            className="phone-item"
-                                        >
-                                            <span className="phone-name">{phone.name}</span>
-                                            <span className="phone-number">{phone.formatted}</span>
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
 
                             {/* Иконка телефона для мобильных */}
                             <button
@@ -354,11 +295,11 @@ const Navbar = () => {
                                 <FiPhone />
                             </button>
 
-                            {/* Иконка дилеров для мобильных */}
+                            {/* Иконка поставщиков для мобильных */}
                             <button
-                                className="mobile-dealers-icon-btn"
-                                onClick={() => setShowDealersModal(true)}
-                                aria-label="Дилеры"
+                                className="mobile-suppliers-icon-btn"
+                                onClick={() => setShowSuppliersModal(true)}
+                                aria-label="Поставщики"
                             >
                                 <FiUsers />
                             </button>
@@ -367,11 +308,12 @@ const Navbar = () => {
                                 <form onSubmit={handleSearch} className="search-form">
                                     <input
                                         type="text"
-                                        placeholder="Поиск..."
+                                        placeholder="Поиск товаров или брендов..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onFocus={() => searchResults.length > 0 && setShowResults(true)}
                                         className="search-input"
+                                        suppressHydrationWarning
                                     />
                                     <button type="submit" className="search-button" aria-label="Поиск">
                                         <FiSearch />
@@ -381,23 +323,40 @@ const Navbar = () => {
                                 {/* Результаты поиска */}
                                 {showResults && searchResults.length > 0 && (
                                     <div className="search-results">
-                                        {searchResults.map(product => (
-                                            <div
-                                                key={product.id}
-                                                className="search-result-item"
-                                                onClick={() => handleProductClick(product.id)}
-                                            >
-                                                <div className="result-image">
-                                                    <img src={product.image} alt={product.name} loading="lazy" />
-                                                </div>
-                                                <div className="result-info">
-                                                    <div className="result-name">{product.name}</div>
-                                                    <div className="result-category">
-                                                        {product.brand}
+                                        {searchResults.map((item, index) => {
+                                            const isProduct = item.hasOwnProperty('brand');
+                                            const itemName = item.name || (isProduct ? 'Товар' : 'Бренд');
+                                            const itemCategory = isProduct ? (item.brand || '') : (item.type || '');
+                                            const itemImage = isProduct ? item.image : null;
+                                            
+                                            return (
+                                                <div
+                                                    key={isProduct ? `product-${item.id || index}` : `brand-${item.id || index}`}
+                                                    className="search-result-item"
+                                                    onClick={() => handleResultClick(item, isProduct ? 'product' : 'brand')}
+                                                >
+                                                    <div className="result-image">
+                                                        {itemImage ? (
+                                                            <img src={itemImage} alt={itemName} />
+                                                        ) : (
+                                                            <div className="result-image-placeholder">
+                                                                <FiBox size={20} />
+                                                            </div>
+                                                        )}
                                                     </div>
+                                                    <div className="result-info">
+                                                        <div className="result-name">{itemName}</div>
+                                                        {itemCategory && (
+                                                            <div className="result-category">{itemCategory}</div>
+                                                        )}
+                                                        <div className="result-type-badge">
+                                                            {isProduct ? 'Товар' : 'Бренд'}
+                                                        </div>
+                                                    </div>
+                                                    <FiChevronRight className="result-arrow" />
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                         <div className="search-results-footer">
                                             <button onClick={handleSearch} className="view-all-button">
                                                 Все результаты ({searchResults.length})
@@ -406,13 +365,6 @@ const Navbar = () => {
                                     </div>
                                 )}
                             </div>
-
-                            <Link href="/cart" className={`cart-button ${isOpen ? 'mobile-hidden' : ''}`} aria-label="Корзина">
-                                <FiShoppingCart />
-                                {cartCount > 0 && (
-                                    <span className="cart-badge">{cartCount}</span>
-                                )}
-                            </Link>
 
                             {/* Бургер меню */}
                             <button
@@ -434,7 +386,7 @@ const Navbar = () => {
                     <div className="phones-modal-content" onClick={e => e.stopPropagation()}>
                         <div className="phones-modal-header">
                             <FiPhone className="phones-modal-icon" />
-                            <h3 className="phones-modal-title">Наши магазины</h3>
+                            <h3 className="phones-modal-title">Связаться с нами</h3>
                             <button
                                 className="phones-modal-close"
                                 onClick={() => setShowPhonesModal(false)}
@@ -443,17 +395,14 @@ const Navbar = () => {
                             </button>
                         </div>
                         <div className="phones-modal-body">
-                            {phones.map((phone, index) => (
-                                <a
-                                    key={index}
-                                    href={`tel:${phone.number}`}
-                                    className="phones-modal-item"
-                                    onClick={() => setShowPhonesModal(false)}
-                                >
-                                    <span className="phones-modal-name">{phone.name}</span>
-                                    <span className="phones-modal-number">{phone.formatted}</span>
-                                </a>
-                            ))}
+                            <a href="tel:+998981102255" className="phones-modal-item">
+                                <span className="phones-modal-name">Основной номер</span>
+                                <span className="phones-modal-number">+998 98 110-22-55</span>
+                            </a>
+                            <a href="tel:+998915452255" className="phones-modal-item">
+                                <span className="phones-modal-name">Дополнительный</span>
+                                <span className="phones-modal-number">+998 91 545-22-55</span>
+                            </a>
                         </div>
                         <div className="phones-modal-footer">
                             <button
@@ -467,48 +416,73 @@ const Navbar = () => {
                 </div>
             )}
 
-            {/* Модальное окно с дилерами */}
-            {showDealersModal && (
-                <div className="dealers-modal-overlay" onClick={() => setShowDealersModal(false)}>
-                    <div className="dealers-modal-content" onClick={e => e.stopPropagation()}>
-                        <div className="dealers-modal-header">
-                            <FiUsers className="dealers-modal-icon" />
-                            <h3 className="dealers-modal-title">Наши дилеры</h3>
+            {/* Модальное окно с поставщиками (брендами) */}
+            {showSuppliersModal && (
+                <div className="suppliers-modal-overlay" onClick={() => setShowSuppliersModal(false)}>
+                    <div className="suppliers-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="suppliers-modal-header">
+                            <FiUsers className="suppliers-modal-icon" />
+                            <h3 className="suppliers-modal-title">Наши поставщики</h3>
                             <button
-                                className="dealers-modal-close"
-                                onClick={() => setShowDealersModal(false)}
+                                className="suppliers-modal-close"
+                                onClick={() => setShowSuppliersModal(false)}
                             >
                                 <FiX />
                             </button>
                         </div>
-                        <div className="dealers-modal-body">
-                            {dealers.map((dealer) => (
-                                <div key={dealer.id} className="dealer-item">
-                                    <div className="dealer-region">
-                                        <FiMapPin className="dealer-region-icon" />
-                                        <span className="dealer-region-name">{dealer.region}</span>
+                        <div className="suppliers-modal-body">
+                            {suppliers.map((supplier) => (
+                                <div key={supplier.id} className="supplier-item">
+                                    <div className="supplier-image">
+                                        {supplier.image ? (
+                                            <img src={supplier.image} alt={supplier.name} />
+                                        ) : (
+                                            <div className="supplier-image-placeholder">
+                                                <FiBox size={24} />
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="dealer-info">
-                                        <div className="dealer-name">
-                                            <FiUser className="dealer-name-icon" />
-                                            <span>{dealer.name}</span>
+                                    <div className="supplier-info">
+                                        <div className="supplier-name">
+                                            <h4>{supplier.name || 'Бренд'}</h4>
+                                            <span className="supplier-type">{supplier.type || ''}</span>
                                         </div>
-                                        <a
-                                            href={`tel:${dealer.phone}`}
-                                            className="dealer-phone"
-                                            onClick={() => setShowDealersModal(false)}
+                                        {supplier.phone && (
+                                            <a
+                                                href={`tel:${supplier.phone}`}
+                                                className="supplier-phone"
+                                                onClick={() => setShowSuppliersModal(false)}
+                                            >
+                                                <FiPhone className="supplier-phone-icon" />
+                                                {supplier.phone}
+                                            </a>
+                                        )}
+                                        {supplier.email && (
+                                            <a
+                                                href={`mailto:${supplier.email}`}
+                                                className="supplier-email"
+                                                onClick={() => setShowSuppliersModal(false)}
+                                            >
+                                                <FiMail className="supplier-email-icon" />
+                                                {supplier.email}
+                                            </a>
+                                        )}
+                                        <Link
+                                            href={`/catalog/${supplier.slug}`}
+                                            className="supplier-link"
+                                            onClick={() => setShowSuppliersModal(false)}
                                         >
-                                            <FiPhone className="dealer-phone-icon" />
-                                            {dealer.formattedPhone}
-                                        </a>
+                                            Смотреть товары
+                                            <FiChevronDown className="supplier-link-icon" />
+                                        </Link>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="dealers-modal-footer">
+                        <div className="suppliers-modal-footer">
                             <button
-                                className="dealers-modal-btn"
-                                onClick={() => setShowDealersModal(false)}
+                                className="suppliers-modal-btn"
+                                onClick={() => setShowSuppliersModal(false)}
                             >
                                 Закрыть
                             </button>

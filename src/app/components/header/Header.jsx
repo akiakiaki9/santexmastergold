@@ -1,25 +1,16 @@
 'use client'
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { FiChevronLeft, FiChevronRight, FiAward, FiShield, FiTruck } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiAward, FiShield, FiTruck, FiPackage, FiGlobe } from 'react-icons/fi';
 import './header.css';
 
-// Функция для создания слага из названия категории
+// Функция для создания слага из названия бренда
 const createSlug = (name) => {
     return name
         .toLowerCase()
         .replace(/[&]/g, 'and')
         .replace(/[^\w\s]/g, '')
         .replace(/\s+/g, '-');
-};
-
-// Маппинг категорий для слайдов
-const categoryMap = {
-    'unitaz': 'unitaz',
-    'vanna': 'vanna',
-    'smestitel': 'smestitel',
-    'oyna': 'oyna',
-    'raktumba': 'raktumba'
 };
 
 const Header = () => {
@@ -30,71 +21,65 @@ const Header = () => {
 
     const slides = [
         {
-            id: 3,
-            title: 'Премиальные унитазы',
-            subtitle: 'Лучшие технологии',
-            description: 'Унитазы с системой микролифт, антибактериальным покрытием и бесшумным смывом. Подвесные и напольные модели премиум-класса.',
-            image: '/images/header/4.png',
-            category: 'unitaz',
-            badge: 'Топ продаж'
-        },
-        {
             id: 1,
-            title: 'Лучшие ванны',
-            subtitle: 'Чугун и акрил',
-            description: 'Эксклюзивные ванны из Италии. Гидромассаж, эмалевое покрытие ручной работы, эргономичные формы для максимального комфорта.',
+            title: 'Оптовая сантехника',
+            subtitle: 'Ведущие бренды',
+            description: 'Mercury plast, Zegor, Hydro Plast, Climaroom, Fayz Plast, AeMarket. Прямые поставки от производителей. Лучшие цены на рынке.',
             image: '/images/header/1.png',
-            category: 'vanna',
-            badge: 'Премиум'
-        },
-        {
-            id: 4,
-            title: 'Смесители Grohe',
-            subtitle: 'Германское качество',
-            description: 'Профессиональные смесители с керамическим картриджем. Термостаты, сенсорное управление, защита от известковых отложений.',
-            image: '/images/header/3.png',
-            category: 'smestitel',
-            badge: 'Акция'
+            link: '/catalog',
+            badge: 'Оптовые цены'
         },
         {
             id: 2,
-            title: 'Зеркала с подсветкой',
-            subtitle: 'LED технологии',
-            description: 'Зеркала с мягкой LED подсветкой, антизапотевающим покрытием и сенсорным управлением. Создайте идеальный интерьер ванной.',
+            title: 'Mercury plast',
+            subtitle: 'Трубы и фитинги',
+            description: 'Качественные системы водоснабжения и отопления. Надежность, проверенная временем. Полный ассортимент в наличии.',
             image: '/images/header/2.png',
-            category: 'oyna',
-            badge: 'Новинка'
+            link: '/catalog/mercury-plast',
+            badge: 'Официальный дистрибьютор'
+        },
+        {
+            id: 3,
+            title: 'Zegor',
+            subtitle: 'Смесители премиум',
+            description: 'Современные смесители для кухни и ванной. Немецкое качество, стильный дизайн, долговечность. Идеально для вашего проекта.',
+            image: '/images/header/3.png',
+            link: '/catalog/zegor',
+            badge: 'Германское качество'
+        },
+        {
+            id: 4,
+            title: 'Hydro Plast',
+            subtitle: 'Профессиональные системы',
+            description: 'Трубы и фитинги для любых задач. Промышленное и бытовое использование. Сертифицированная продукция.',
+            image: '/images/header/4.png',
+            link: '/catalog/hydro-plast',
+            badge: 'Профессионально'
         },
         {
             id: 5,
-            title: 'Мебель для ванной',
-            subtitle: 'Влагостойкие материалы',
-            description: 'Тумбы, пеналы и шкафы из влагостойких материалов. LED подсветка, бесшумные доводчики, вместительные системы хранения.',
+            title: 'AeMarket',
+            subtitle: 'Всё для дома',
+            description: 'Бойлеры, насосы, генераторы, солнечные панели. Широкий ассортимент для дома и бизнеса. Гарантия качества.',
             image: '/images/header/5.png',
-            category: 'raktumba',
-            badge: 'Премиум'
+            link: '/catalog/aemarket',
+            badge: 'Хит продаж'
         }
     ];
-
-    // Обновляем слайды с slug
-    const slidesWithSlug = slides.map(slide => ({
-        ...slide,
-        slug: createSlug(slide.category)
-    }));
 
     const nextSlide = useCallback(() => {
         if (isAnimating) return;
         setIsAnimating(true);
-        setCurrentSlide((prev) => (prev === slidesWithSlug.length - 1 ? 0 : prev + 1));
+        setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
         setTimeout(() => setIsAnimating(false), 800);
-    }, [slidesWithSlug.length, isAnimating]);
+    }, [slides.length, isAnimating]);
 
     const prevSlide = useCallback(() => {
         if (isAnimating) return;
         setIsAnimating(true);
-        setCurrentSlide((prev) => (prev === 0 ? slidesWithSlug.length - 1 : prev - 1));
+        setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
         setTimeout(() => setIsAnimating(false), 800);
-    }, [slidesWithSlug.length, isAnimating]);
+    }, [slides.length, isAnimating]);
 
     const goToSlide = useCallback((index) => {
         if (isAnimating || index === currentSlide) return;
@@ -140,7 +125,7 @@ const Header = () => {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
-                {slidesWithSlug.map((slide, index) => (
+                {slides.map((slide, index) => (
                     <div
                         key={slide.id}
                         className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
@@ -168,18 +153,18 @@ const Header = () => {
                                     <p className="slide-description">{slide.description}</p>
                                     <div className="slide-actions">
                                         <Link
-                                            href={`/catalog/${slide.slug}`}
+                                            href={slide.link}
                                             className="btn btn-primary"
                                             tabIndex={index === currentSlide ? 0 : -1}
                                         >
-                                            Смотреть все
+                                            Подробнее
                                         </Link>
                                         <Link
                                             href="/catalog"
                                             className="btn btn-outline"
                                             tabIndex={index === currentSlide ? 0 : -1}
                                         >
-                                            Каталог
+                                            Все бренды
                                         </Link>
                                     </div>
                                 </div>
@@ -218,7 +203,7 @@ const Header = () => {
 
                 {/* Индикаторы */}
                 <div className="carousel-dots">
-                    {slidesWithSlug.map((_, index) => (
+                    {slides.map((_, index) => (
                         <button
                             key={index}
                             className={`dot ${index === currentSlide ? 'active' : ''}`}
@@ -236,11 +221,11 @@ const Header = () => {
                     <div className="benefits-grid">
                         <div className="benefit-item">
                             <div className="benefit-icon">
-                                <FiAward />
+                                <FiPackage />
                             </div>
                             <div className="benefit-info">
-                                <h3>Гарантия 5 лет</h3>
-                                <p>На всю продукцию</p>
+                                <h3>Прямые поставки</h3>
+                                <p>От производителей</p>
                             </div>
                         </div>
                         <div className="benefit-item">
@@ -248,17 +233,26 @@ const Header = () => {
                                 <FiTruck />
                             </div>
                             <div className="benefit-info">
-                                <h3>Доставка по городу</h3>
-                                <p>Бесплатно от 1 000 000 сум</p>
+                                <h3>Доставка по Узбекистану</h3>
+                                <p>Оптовым клиентам</p>
                             </div>
                         </div>
                         <div className="benefit-item">
                             <div className="benefit-icon">
-                                <FiShield />
+                                <FiAward />
                             </div>
                             <div className="benefit-info">
-                                <h3>Официальная гарантия</h3>
-                                <p>Сертифицированная продукция</p>
+                                <h3>Гарантия качества</h3>
+                                <p>Сертифицированные бренды</p>
+                            </div>
+                        </div>
+                        <div className="benefit-item">
+                            <div className="benefit-icon">
+                                <FiGlobe />
+                            </div>
+                            <div className="benefit-info">
+                                <h3>7+ брендов</h3>
+                                <p>В ассортименте</p>
                             </div>
                         </div>
                     </div>

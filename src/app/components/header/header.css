@@ -1,3 +1,28 @@
+/* header.css - Обновленная версия для оптового склада сантехники */
+
+:root {
+    --gold: #c5a572;
+    --gold-dark: #b8860b;
+    --gold-light: #e5c28e;
+    --navy: #1a2a3a;
+    --navy-dark: #0f1a24;
+    --white: #ffffff;
+    --cream: #f8f5f0;
+    --cream-dark: #f0e9e0;
+    --border: #e5e5e5;
+    --text: #333333;
+    --gray: #666666;
+    --gray-light: #999999;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --shadow-gold: 0 4px 20px rgba(197, 165, 114, 0.3);
+    --gradient-gold: linear-gradient(135deg, #c5a572 0%, #e5b73b 50%, #b8860b 100%);
+    --gradient-navy: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Базовые стили */
 .btn-outline {
     color: #fff !important;
@@ -11,6 +36,19 @@
     background: rgba(197, 165, 114, 0.1);
 }
 
+.btn-primary {
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--gold-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
+
 .header {
     position: relative;
     width: 100%;
@@ -19,7 +57,7 @@
     overflow: hidden;
 }
 
-/* Карусель */
+/* ========== КАРУСЕЛЬ ========== */
 .carousel {
     position: relative;
     height: min(800px, 90vh);
@@ -71,9 +109,9 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg,
-            rgba(26, 47, 79, 0.678) 0%,
-            rgba(26, 47, 79, 0.419) 50%,
-            rgba(26, 47, 79, 0.396) 100%);
+            rgba(26, 47, 79, 0.85) 0%,
+            rgba(26, 47, 79, 0.6) 50%,
+            rgba(26, 47, 79, 0.5) 100%);
     z-index: 1;
     backdrop-filter: blur(2px);
 }
@@ -180,7 +218,7 @@
     color: var(--white);
     margin-bottom: clamp(15px, 2vh, 20px);
     line-height: 1.1;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     animation: fadeInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
     word-break: break-word;
@@ -222,6 +260,15 @@
     text-align: center;
     font-size: clamp(0.8rem, 2vw, 0.9rem);
     padding: clamp(10px, 2vh, 12px) clamp(20px, 3vw, 30px);
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 /* Изображение слайда */
@@ -419,7 +466,7 @@
     opacity: 0.5;
 }
 
-/* Преимущества */
+/* ========== ПРЕИМУЩЕСТВА ========== */
 .benefits {
     background: var(--white);
     padding: clamp(20px, 5vh, 40px) 0;
@@ -430,7 +477,7 @@
 
 .benefits-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: clamp(20px, 4vw, 40px);
 }
 
@@ -479,6 +526,7 @@
     font-size: clamp(0.95rem, 2.5vw, 1.1rem);
     margin-bottom: 5px;
     color: var(--navy);
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -582,8 +630,8 @@
 
     .overlay {
         background: linear-gradient(135deg,
-                rgba(26, 47, 79, 0.678) 0%,
-                rgba(26, 47, 79, 0.396) 100%);
+                rgba(26, 47, 79, 0.85) 0%,
+                rgba(26, 47, 79, 0.6) 100%);
     }
 
     .benefits-grid {
@@ -593,6 +641,11 @@
 
     .benefit-item {
         justify-content: center;
+    }
+    
+    .benefit-info h3,
+    .benefit-info p {
+        white-space: normal;
     }
 }
 
@@ -616,7 +669,7 @@
     }
 
     .carousel-nav {
-        display: none; /* Скрываем навигационные кнопки на мобильных, используем свайпы */
+        display: none;
     }
 
     .carousel-dots {
@@ -784,6 +837,39 @@
     }
 }
 
+/* Landscape ориентация */
+@media (max-height: 600px) and (orientation: landscape) {
+    .carousel {
+        height: 100vh;
+    }
+    
+    .slide-content {
+        padding: 60px 0 30px;
+    }
+    
+    .slide-image {
+        height: 150px;
+    }
+    
+    .slide-title {
+        font-size: clamp(1.5rem, 5vh, 2rem);
+        margin-bottom: 5px;
+    }
+    
+    .slide-description {
+        margin-bottom: 10px;
+        -webkit-line-clamp: 2;
+    }
+    
+    .slide-actions {
+        gap: 8px;
+    }
+    
+    .benefits {
+        display: none;
+    }
+}
+
 /* Анимация загрузки */
 @keyframes shimmer {
     0% {
@@ -826,11 +912,11 @@
 /* Улучшения для тач-устройств */
 @media (hover: none) and (pointer: coarse) {
     .carousel-nav {
-        display: none; /* Скрываем кнопки на тач-устройствах */
+        display: none;
     }
     
     .image-wrapper {
-        transform: none; /* Убираем 3D эффекты на тач-устройствах */
+        transform: none;
     }
     
     .benefit-item:active {
@@ -843,39 +929,6 @@
     
     .slide-actions .btn:active {
         transform: scale(0.95);
-    }
-}
-
-/* Оптимизация для landscape ориентации */
-@media (max-height: 600px) and (orientation: landscape) {
-    .carousel {
-        height: 100vh;
-    }
-    
-    .slide-content {
-        padding: 60px 0 30px;
-    }
-    
-    .slide-image {
-        height: 150px;
-    }
-    
-    .slide-title {
-        font-size: clamp(1.5rem, 5vh, 2rem);
-        margin-bottom: 5px;
-    }
-    
-    .slide-description {
-        margin-bottom: 10px;
-        -webkit-line-clamp: 2;
-    }
-    
-    .slide-actions {
-        gap: 8px;
-    }
-    
-    .benefits {
-        display: none; /* Скрываем преимущества в landscape для экономии места */
     }
 }
 

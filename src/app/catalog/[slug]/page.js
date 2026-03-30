@@ -1,29 +1,28 @@
 'use client'
-import React, { useState, useMemo, useCallback, useEffect, memo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
-    FiGrid,
-    FiList,
     FiArrowLeft,
     FiChevronRight,
     FiBox,
-    FiShoppingCart,
     FiGlobe,
     FiPhone,
     FiMail,
-    FiClock,
-    FiAward,
-    FiTruck,
-    FiShield,
-    FiStar,
     FiExternalLink,
     FiInstagram,
     FiFacebook,
-    FiYoutube
+    FiYoutube,
+    FiPackage,
+    FiGrid,
+    FiList,
+    FiChevronDown,
+    FiShield,
+    FiTruck,
+    FiStar,
+    FiMessageCircle
 } from 'react-icons/fi';
 import { FaTelegram, FaWhatsapp } from 'react-icons/fa';
-import { useCart } from '@/app/context/CartContext';
 import Navbar from '@/app/components/navbar/Navbar';
 import Footer from '@/app/components/footer/Footer';
 import { brands, products } from '@/app/utils/data1';
@@ -38,17 +37,6 @@ const createSlug = (name) => {
         .replace(/\s+/g, '-');
 };
 
-// Маппинг иконок для типов брендов
-const brandIcons = {
-    'Трубы и фитинги': <FiBox />,
-    'Сместители': <FiGlobe />,
-    'Сантехника': <FiBox />,
-    'Сантехника и вентиляция': <FiGlobe />,
-    'Бочки': <FiBox />,
-    'Ванная и кухня, вода и насосы, отопление, электричество и генераторы': <FiGlobe />,
-    'default': <FiGlobe />
-};
-
 // Социальные сети иконки
 const socialIcons = {
     'website': <FiGlobe />,
@@ -59,189 +47,151 @@ const socialIcons = {
     'whatsapp': <FaWhatsapp />
 };
 
+// Названия соцсетей на русском
+const socialNames = {
+    'website': 'Сайт',
+    'instagram': 'Instagram',
+    'telegram': 'Telegram',
+    'facebook': 'Facebook',
+    'youtube': 'YouTube',
+    'whatsapp': 'WhatsApp'
+};
+
 // Описания для брендов
 const brandDescriptions = {
-    'Mercury plast': 'Качественные трубы и фитинги для водоснабжения и отопления. Надежность и долговечность.',
-    'Zegor': 'Современные смесители для кухни и ванной. Немецкое качество по доступным ценам.',
-    'DERYA PLASTIK & DERYA KERAMIKA': 'Премиальная сантехника для вашего дома. Керамика высшего качества.',
-    'Hydro Plast': 'Профессиональные системы трубопроводов для любых задач.',
-    'Climaroom': 'Климатическое оборудование и вентиляция для комфортного микроклимата.',
-    'Fayz Plast': 'Качественные пластиковые бочки и емкости для хранения воды.',
-    'AeMarket': 'Широкий ассортимент товаров для дома: отопление, насосы, электрика и генераторы.'
+    'Mercury plast': 'Ведущий производитель труб и фитингов для систем водоснабжения и отопления. Инновационные решения для строительства и ремонта.',
+    'Zegor': 'Современные смесители для кухни и ванной. Сочетание немецкого качества и стильного дизайна.',
+    'DERYA PLASTIK & DERYA KERAMIKA': 'Премиальная сантехника и керамика для ванных комнат. Высокое качество и долговечность.',
+    'Hydro Plast': 'Профессиональные системы трубопроводов для промышленного и бытового использования.',
+    'Climaroom': 'Климатическое оборудование и системы вентиляции для создания комфортного микроклимата.',
+    'Fayz Plast': 'Качественные пластиковые бочки и емкости для хранения воды и других жидкостей.',
+    'AeMarket': 'Широкий ассортимент товаров для дома: отопление, насосы, электрика, генераторы, солнечные панели.'
 };
 
-// URL баннеров для брендов
-const brandBanners = {
-    'Mercury plast': '/images/banners/mercury-plast.jpg',
-    'Zegor': '/images/banners/zegor.jpg',
-    'DERYA PLASTIK & DERYA KERAMIKA': '/images/banners/derya.jpg',
-    'Hydro Plast': '/images/banners/hydro-plast.jpg',
-    'Climaroom': '/images/banners/climaroom.jpg',
-    'Fayz Plast': '/images/banners/fayz-plast.jpg',
-    'AeMarket': '/images/banners/aemarket.jpg',
-    'default': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&auto=format'
-};
-
-// Компонент изображения
-const ProductImage = memo(({ product, isHovered, onMouseEnter, onMouseLeave }) => {
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [imageError, setImageError] = useState(false);
-    const [currentImage, setCurrentImage] = useState(product.image);
-
-    useEffect(() => {
-        if (isHovered && product.image_1) {
-            setCurrentImage(product.image_1);
-        } else {
-            setCurrentImage(product.image);
-        }
-    }, [isHovered, product.image, product.image_1]);
-
-    const handleImageError = () => {
-        setImageError(true);
-        setCurrentImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR202VPZfMD9kdS4yqx2x8aeg6DYlFypnBNBA&s');
-    };
-
-    return (
-        <div
-            className="product-image-container"
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-        >
-            {!imageLoaded && !imageError && (
-                <div className="image-skeleton" />
-            )}
-            {imageError ? (
-                <div className="image-error">
-                    <FiBox size={32} />
-                </div>
-            ) : (
-                <img
-                    src={currentImage}
-                    alt={product.name}
-                    loading="lazy"
-                    decoding="async"
-                    onLoad={() => setImageLoaded(true)}
-                    onError={handleImageError}
-                    className={`product-img ${imageLoaded ? 'loaded' : 'loading'}`}
-                />
-            )}
-
-            {product.oldPrice && (
-                <span className="product-badge sale">SALE</span>
-            )}
-            {!product.inStock && (
-                <span className="product-badge out">Под заказ</span>
-            )}
-        </div>
-    );
-});
-
-ProductImage.displayName = 'ProductImage';
-
-// Карточка товара для сетки
-const GridProductCard = memo(({ product, onAddToCart, onMouseEnter, onMouseLeave, isHovered }) => {
-    return (
-        <div className="product-card-grid">
-            <Link
-                href={`/product/${product.id}`}
-                className="product-card-link"
-                prefetch={false}
-            >
-                <ProductImage
-                    product={product}
-                    isHovered={isHovered}
-                    onMouseEnter={() => onMouseEnter(product.id)}
-                    onMouseLeave={onMouseLeave}
-                />
-
-                <div className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-category">{product.category}</p>
-                </div>
-            </Link>
-
-            <div className="product-actions">
-                <button
-                    className="action-btn cart-btn"
-                    aria-label="В корзину"
-                    onClick={(e) => onAddToCart(e, product)}
-                    disabled={!product.inStock}
-                >
-                    <FiShoppingCart />
-                </button>
-            </div>
-        </div>
-    );
-});
-
-GridProductCard.displayName = 'GridProductCard';
-
-// Карточка товара для списка
-const ListProductCard = memo(({ product, onAddToCart }) => {
+// Компонент карточки товара (только внешние ссылки)
+const ProductCard = memo(({ product }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-    return (
-        <div className="product-card-list">
-            <Link
-                href={`/product/${product.id}`}
-                className="product-card-link"
-                prefetch={false}
-            >
-                <div className="product-image-container">
-                    {!imageLoaded && !imageError && (
-                        <div className="image-skeleton" />
-                    )}
+    // Проверяем наличие внешней ссылки
+    const hasExternalUrl = product.url && product.url.startsWith('http');
+
+    // Если нет внешней ссылки, карточка не кликабельна
+    if (!hasExternalUrl) {
+        return (
+            <div className="product-card-large no-link">
+                <div className="product-image-large">
+                    {!imageLoaded && !imageError && <div className="image-skeleton" />}
                     {imageError ? (
                         <div className="image-error">
-                            <FiBox size={32} />
+                            <FiBox size={48} />
                         </div>
                     ) : (
                         <img
                             src={product.image}
                             alt={product.name}
-                            loading="lazy"
-                            decoding="async"
                             onLoad={() => setImageLoaded(true)}
                             onError={() => setImageError(true)}
-                            className={`product-img ${imageLoaded ? 'loaded' : 'loading'}`}
+                            className={`product-img-large ${imageLoaded ? 'loaded' : 'loading'}`}
                         />
                     )}
-                    {product.oldPrice && (
-                        <span className="product-badge sale">SALE</span>
-                    )}
-                    {!product.inStock && (
-                        <span className="product-badge out">Под заказ</span>
+                    {!product.inStock && <span className="product-badge-out">Под заказ</span>}
+                </div>
+                <div className="product-info-large">
+                    <h3 className="product-name-large">{product.name}</h3>
+                    {product.category && (
+                        <p className="product-category-large">{product.category}</p>
                     )}
                 </div>
+            </div>
+        );
+    }
 
-                <div className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-category">{product.category}</p>
+    // Если есть внешняя ссылка - кликабельная карточка
+    return (
+        <div className="product-card-large">
+            <a
+                href={product.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="product-card-link"
+            >
+                <div className="product-image-large">
+                    {!imageLoaded && !imageError && <div className="image-skeleton" />}
+                    {imageError ? (
+                        <div className="image-error">
+                            <FiBox size={48} />
+                        </div>
+                    ) : (
+                        <img
+                            src={product.image}
+                            alt={product.name}
+                            onLoad={() => setImageLoaded(true)}
+                            onError={() => setImageError(true)}
+                            className={`product-img-large ${imageLoaded ? 'loaded' : 'loading'}`}
+                        />
+                    )}
+                    {!product.inStock && <span className="product-badge-out">Под заказ</span>}
+                    <span className="product-badge-external">
+                        <FiExternalLink /> На сайт
+                    </span>
                 </div>
-            </Link>
-
-            {product.inStock && (
-                <button
-                    className="list-cart-btn"
-                    onClick={(e) => onAddToCart(e, product)}
-                >
-                    <FiShoppingCart />
-                    В корзину
-                </button>
-            )}
+                <div className="product-info-large">
+                    <h3 className="product-name-large">{product.name}</h3>
+                    {product.category && (
+                        <p className="product-category-large">{product.category}</p>
+                    )}
+                    <p className="product-external-note">
+                        <FiExternalLink /> Перейти на сайт поставщика
+                    </p>
+                </div>
+            </a>
         </div>
     );
 });
 
-ListProductCard.displayName = 'ListProductCard';
+ProductCard.displayName = 'ProductCard';
+
+// Компонент социальных сетей бренда (для отображения под карточками)
+const BrandSocialWidget = memo(({ brandInfo }) => {
+    if (!brandInfo.social_links || brandInfo.social_links.length === 0) return null;
+
+    return (
+        <div className="brand-social-widget">
+            <div className="brand-social-widget-header">
+                <FiMessageCircle className="widget-icon" />
+                <h4>Больше информации в соцсетях</h4>
+            </div>
+            <p className="brand-social-widget-text">
+                Подписывайтесь на {brandInfo.name}, чтобы следить за новинками, акциями и получать подробную информацию о товарах
+            </p>
+            <div className="brand-social-widget-links">
+                {brandInfo.social_links.map((link, index) => (
+                    <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-widget-link"
+                    >
+                        {socialIcons[link.type] || <FiGlobe />}
+                        <span>{socialNames[link.type] || link.type}</span>
+                        <FiExternalLink className="external-icon" />
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+});
+
+BrandSocialWidget.displayName = 'BrandSocialWidget';
 
 export default function BrandPage() {
     const params = useParams();
     const slug = params.slug;
     const [viewMode, setViewMode] = useState('grid');
-    const { addToCart } = useCart();
-    const [hoveredProductId, setHoveredProductId] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [categoriesOpen, setCategoriesOpen] = useState(true);
 
     // Получаем информацию о бренде по slug
     const brandInfo = useMemo(() => {
@@ -250,17 +200,7 @@ export default function BrandPage() {
             const brandSlug = createSlug(brand.name);
             brandMap[brandSlug] = brand;
         });
-
-        const found = brandMap[slug];
-
-        if (!found) return null;
-
-        return {
-            ...found,
-            icon: brandIcons[found.type] || brandIcons.default,
-            description: brandDescriptions[found.name] || `${found.name} - ${found.type}`,
-            banner: brandBanners[found.name] || brandBanners.default
-        };
+        return brandMap[slug] || null;
     }, [slug]);
 
     // Получаем товары бренда
@@ -269,41 +209,31 @@ export default function BrandPage() {
         return products.filter(p => p.brand === brandInfo.name);
     }, [brandInfo]);
 
-    // Статистика бренда
-    const brandStats = useMemo(() => {
-        const totalProducts = brandProducts.length;
-        const inStock = brandProducts.filter(p => p.inStock !== false).length;
-        const categories = [...new Set(brandProducts.map(p => p.category))];
-
-        return {
-            totalProducts,
-            inStock,
-            categoriesCount: categories.length,
-            categories
-        };
+    // Получаем категории товаров (уникальные)
+    const categories = useMemo(() => {
+        const cats = new Set();
+        brandProducts.forEach(product => {
+            if (product.category) cats.add(product.category);
+        });
+        return ['all', ...Array.from(cats).sort()];
     }, [brandProducts]);
 
-    const handleAddToCart = useCallback((e, product) => {
-        e.preventDefault();
-        e.stopPropagation();
+    // Фильтруем товары по категории
+    const filteredProducts = useMemo(() => {
+        if (selectedCategory === 'all') return brandProducts;
+        return brandProducts.filter(p => p.category === selectedCategory);
+    }, [brandProducts, selectedCategory]);
 
-        if (e.detail > 1) return;
-        if (!product.inStock) return;
-
-        addToCart(product);
-
-        const btn = e.currentTarget;
-        btn.classList.add('clicked');
-        setTimeout(() => btn.classList.remove('clicked'), 200);
-    }, [addToCart]);
-
-    const handleMouseEnter = useCallback((productId) => {
-        setHoveredProductId(productId);
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        setHoveredProductId(null);
-    }, []);
+    // Получаем статистику по категориям
+    const categoryStats = useMemo(() => {
+        const stats = {};
+        brandProducts.forEach(p => {
+            if (p.category) {
+                stats[p.category] = (stats[p.category] || 0) + 1;
+            }
+        });
+        return stats;
+    }, [brandProducts]);
 
     if (!brandInfo) {
         return (
@@ -331,93 +261,46 @@ export default function BrandPage() {
             <Navbar />
 
             <main className="brand-page">
-                {/* Баннер бренда с логотипом и названием */}
-                <div
-                    className="brand-banner"
-                    style={{ backgroundImage: `url(${brandInfo.banner})` }}
-                >
-                    <div className="banner-overlay"></div>
+                {/* Баннер бренда - акцент на бренде */}
+                <div className="brand-hero">
+                    <div className="brand-hero-bg">
+                        <div className="brand-hero-overlay"></div>
+                    </div>
                     <div className="container">
-                        <div className="banner-content">
-                            {brandInfo.image && (
-                                <div className="brand-logo-large">
-                                    <img
-                                        src={brandInfo.image}
-                                        alt={brandInfo.name}
-                                        loading="lazy"
-                                    />
+                        <div className="brand-hero-content">
+                            <div className="brand-logo-wrapper">
+                                {brandInfo.image && (
+                                    <div className="brand-logo-hero">
+                                        <img src={brandInfo.image} alt={brandInfo.name} />
+                                    </div>
+                                )}
+                                <div className="brand-icon-hero">
+                                    <FiBox size={32} />
                                 </div>
-                            )}
-                            <div className="brand-icon-large">
-                                {brandInfo.icon}
                             </div>
-                            <h1 className="brand-title">{brandInfo.name}</h1>
-                            <p className="brand-type">{brandInfo.type}</p>
-                            <p className="brand-description">{brandInfo.description}</p>
+                            <div className="brand-info-hero">
+                                <h1 className="brand-name-hero">{brandInfo.name}</h1>
+                                <p className="brand-type-hero">{brandInfo.type}</p>
+                                <p className="brand-desc-hero">{brandDescriptions[brandInfo.name] || brandInfo.type}</p>
 
-                            {/* Контакты бренда */}
-                            {brandInfo.contacts && brandInfo.contacts.length > 0 && (
-                                <div className="brand-contacts">
-                                    {brandInfo.contacts[0].phone && (
-                                        <a href={`tel:${brandInfo.contacts[0].phone}`} className="brand-contact">
-                                            <FiPhone />
-                                            <span>{brandInfo.contacts[0].phone}</span>
+                                {/* Контакты и соцсети */}
+                                <div className="brand-links-hero">
+                                    {brandInfo.contacts && brandInfo.contacts[0]?.phone && (
+                                        <a href={`tel:${brandInfo.contacts[0].phone}`} className="brand-link">
+                                            <FiPhone /> {brandInfo.contacts[0].phone}
                                         </a>
                                     )}
-                                    {brandInfo.contacts[0].phone_1 && (
-                                        <a href={`tel:${brandInfo.contacts[0].phone_1}`} className="brand-contact">
-                                            <FiPhone />
-                                            <span>{brandInfo.contacts[0].phone_1}</span>
+                                    {brandInfo.contacts && brandInfo.contacts[0]?.email && (
+                                        <a href={`mailto:${brandInfo.contacts[0].email}`} className="brand-link">
+                                            <FiMail /> {brandInfo.contacts[0].email}
                                         </a>
                                     )}
-                                    {brandInfo.contacts[0].email && (
-                                        <a href={`mailto:${brandInfo.contacts[0].email}`} className="brand-contact">
-                                            <FiMail />
-                                            <span>{brandInfo.contacts[0].email}</span>
-                                        </a>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Социальные сети */}
-                            {brandInfo.social_links && brandInfo.social_links.length > 0 && (
-                                <div className="brand-social-links">
-                                    {brandInfo.social_links.map((link, index) => (
-                                        <a
-                                            key={index}
-                                            href={link.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="brand-social-link"
-                                            title={link.type}
-                                        >
+                                    {brandInfo.social_links?.map((link, i) => (
+                                        <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="brand-link">
                                             {socialIcons[link.type] || <FiExternalLink />}
+                                            {link.type === 'website' ? 'Сайт' : link.type}
                                         </a>
                                     ))}
-                                </div>
-                            )}
-
-                            <div className="brand-stats">
-                                <div className="stat">
-                                    <FiBox className="stat-icon" />
-                                    <div>
-                                        <strong>{brandStats.totalProducts}</strong>
-                                        <span>Товаров</span>
-                                    </div>
-                                </div>
-                                <div className="stat">
-                                    <FiAward className="stat-icon" />
-                                    <div>
-                                        <strong>{brandStats.inStock}</strong>
-                                        <span>В наличии</span>
-                                    </div>
-                                </div>
-                                <div className="stat">
-                                    <FiGrid className="stat-icon" />
-                                    <div>
-                                        <strong>{brandStats.categoriesCount}</strong>
-                                        <span>Категорий</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -434,97 +317,113 @@ export default function BrandPage() {
                         <span>{brandInfo.name}</span>
                     </div>
 
-                    {/* Информационная секция о бренде */}
-                    <div className="brand-info-section">
-                        <div className="brand-info-card">
-                            <h3 className="brand-info-title">О бренде {brandInfo.name}</h3>
-                            <p className="brand-info-text">
-                                {brandInfo.description}
-                            </p>
-                            <div className="brand-info-features">
-                                <div className="feature-item">
-                                    <FiShield className="feature-icon" />
-                                    <span>Официальная гарантия</span>
+                    {/* Основной контент */}
+                    <div className="brand-main-layout">
+                        {/* Левая колонка - категории */}
+                        <aside className="brand-sidebar">
+                            <div className="categories-widget">
+                                <div
+                                    className="categories-header"
+                                    onClick={() => setCategoriesOpen(!categoriesOpen)}
+                                >
+                                    <h3>Категории товаров</h3>
+                                    <FiChevronDown className={`categories-toggle ${categoriesOpen ? 'open' : ''}`} />
                                 </div>
-                                <div className="feature-item">
-                                    <FiTruck className="feature-icon" />
-                                    <span>Быстрая доставка</span>
-                                </div>
-                                <div className="feature-item">
-                                    <FiStar className="feature-icon" />
-                                    <span>Премиум качество</span>
-                                </div>
-                                <div className="feature-item">
-                                    <FiClock className="feature-icon" />
-                                    <span>Поддержка 24/7</span>
-                                </div>
+                                {categoriesOpen && (
+                                    <ul className="categories-list">
+                                        {categories.map(cat => (
+                                            <li key={cat}>
+                                                <button
+                                                    className={`category-link ${selectedCategory === cat ? 'active' : ''}`}
+                                                    onClick={() => setSelectedCategory(cat)}
+                                                >
+                                                    {cat === 'all' ? 'Все товары' : cat}
+                                                    {cat !== 'all' && (
+                                                        <span className="category-count">{categoryStats[cat]}</span>
+                                                    )}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Заголовок с кнопкой PDF */}
-                    <div className="brand-header">
-                        <h2 className="brand-subtitle">
-                            Товары {brandInfo.name}
-                        </h2>
-                    </div>
-
-                    <div className="brand-content">
-                        {/* Товары */}
-                        <div className="brand-products">
-                            <div className="products-toolbar">
-                                <div className="results-count">
-                                    Найдено: <strong>{brandProducts.length}</strong> товаров
-                                </div>
-
-                                <div className="toolbar-right">
-                                    <div className="view-toggle">
-                                        <button
-                                            className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                                            onClick={() => setViewMode('grid')}
-                                            aria-label="Сетка"
-                                        >
-                                            <FiGrid />
-                                        </button>
-                                        <button
-                                            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                                            onClick={() => setViewMode('list')}
-                                            aria-label="Список"
-                                        >
-                                            <FiList />
-                                        </button>
+                            {/* Информация о бренде */}
+                            <div className="brand-sidebar-info">
+                                <h4>О бренде</h4>
+                                <p>{brandInfo.description}</p>
+                                <div className="brand-features">
+                                    <div className="brand-feature">
+                                        <FiShield />
+                                        <span>Официальная гарантия</span>
+                                    </div>
+                                    <div className="brand-feature">
+                                        <FiTruck />
+                                        <span>Прямые поставки</span>
+                                    </div>
+                                    <div className="brand-feature">
+                                        <FiStar />
+                                        <span>Сертифицировано</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {brandProducts.length === 0 ? (
+                            {/* Виджет соцсетей в боковой панели */}
+                            <BrandSocialWidget brandInfo={brandInfo} />
+                        </aside>
+
+                        {/* Правая колонка - товары */}
+                        <div className="brand-products-area">
+                            {/* Панель инструментов */}
+                            <div className="products-toolbar">
+                                <div className="results-count">
+                                    <FiPackage className="results-icon" />
+                                    <span>Найдено <strong>{filteredProducts.length}</strong> товаров</span>
+                                    {selectedCategory !== 'all' && (
+                                        <button
+                                            className="clear-category"
+                                            onClick={() => setSelectedCategory('all')}
+                                        >
+                                            <FiArrowLeft /> Вернуться ко всем
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="view-toggle">
+                                    <button
+                                        className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                                        onClick={() => setViewMode('grid')}
+                                    >
+                                        <FiGrid />
+                                    </button>
+                                    <button
+                                        className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                                        onClick={() => setViewMode('list')}
+                                    >
+                                        <FiList />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Товары */}
+                            {filteredProducts.length === 0 ? (
                                 <div className="no-products">
-                                    <p>В данном бренде пока нет товаров</p>
-                                    <Link href="/catalog" className="reset-filters-btn">
-                                        Вернуться в каталог
-                                    </Link>
+                                    <FiBox size={64} />
+                                    <h3>Нет товаров в этой категории</h3>
+                                    <p>Попробуйте выбрать другую категорию</p>
                                 </div>
                             ) : (
-                                <div className={`products-${viewMode}`}>
-                                    {brandProducts.map(product => (
-                                        viewMode === 'grid' ? (
-                                            <GridProductCard
-                                                key={product.id}
-                                                product={product}
-                                                onAddToCart={handleAddToCart}
-                                                onMouseEnter={() => handleMouseEnter(product.id)}
-                                                onMouseLeave={handleMouseLeave}
-                                                isHovered={hoveredProductId === product.id}
-                                            />
-                                        ) : (
-                                            <ListProductCard
-                                                key={product.id}
-                                                product={product}
-                                                onAddToCart={handleAddToCart}
-                                            />
-                                        )
-                                    ))}
-                                </div>
+                                <>
+                                    <div className={`products-${viewMode === 'grid' ? 'grid-large' : 'list-large'}`}>
+                                        {filteredProducts.map(product => (
+                                            <ProductCard key={product.id} product={product} />
+                                        ))}
+                                    </div>
+
+                                    {/* Виджет соцсетей под товарами (для мобильных) */}
+                                    <div className="brand-social-widget-mobile">
+                                        <BrandSocialWidget brandInfo={brandInfo} />
+                                    </div>
+                                </>
                             )}
                         </div>
                     </div>
