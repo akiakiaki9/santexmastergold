@@ -225,52 +225,8 @@ export default function RootLayout({ children }) {
             })
           }}
         />
-        
-        {/* Скрипт для удаления атрибутов расширений браузера */}
-        <Script
-          id="fix-hydration"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                // Удаляем проблемные атрибуты от расширений браузера
-                const removeAttributes = function() {
-                  if (document.documentElement && document.documentElement.hasAttribute('cz-shortcut-listen')) {
-                    document.documentElement.removeAttribute('cz-shortcut-listen');
-                  }
-                  if (document.body && document.body.hasAttribute('cz-shortcut-listen')) {
-                    document.body.removeAttribute('cz-shortcut-listen');
-                  }
-                };
-                
-                // Запускаем сразу
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', removeAttributes);
-                } else {
-                  removeAttributes();
-                }
-                
-                // Наблюдаем за изменениями
-                const observer = new MutationObserver(function(mutations) {
-                  mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes') {
-                      removeAttributes();
-                    }
-                  });
-                });
-                
-                if (document.documentElement) {
-                  observer.observe(document.documentElement, { attributes: true });
-                }
-                if (document.body) {
-                  observer.observe(document.body, { attributes: true });
-                }
-              })();
-            `,
-          }}
-        />
       </head>
-      <body 
+      <body
         className={`${geistSans.variable} ${geistMono.variable}`}
         suppressHydrationWarning
       >

@@ -1,5 +1,5 @@
 'use client'
-import React, { memo } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
     FiArrowRight,
@@ -9,8 +9,7 @@ import {
     FiPhone,
     FiPackage,
     FiTruck,
-    FiShield,
-    FiStar
+    FiShield
 } from 'react-icons/fi';
 import { FaTelegram, FaInstagram } from 'react-icons/fa';
 import { brands, products } from '@/app/utils/data1';
@@ -43,11 +42,9 @@ const getProductCount = (brandName) => {
 
 // URL изображений для брендов из интернета (заглушки)
 const getBrandImage = (brand) => {
-    // Если есть локальное изображение, используем его
     if (brand.image && !brand.image.includes('source.unsplash')) {
         return brand.image;
     }
-    // Иначе используем заглушки из интернета
     const defaultImages = {
         'Mercury plast': 'https://images.unsplash.com/photo-1581092335871-4a3c9b5db1c6?w=400&auto=format',
         'Zegor': 'https://images.unsplash.com/photo-1585123334904-845d60e97b29?w=400&auto=format',
@@ -60,8 +57,8 @@ const getBrandImage = (brand) => {
     return defaultImages[brand.name] || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&auto=format';
 };
 
-// Карточка бренда с фото
-const BrandCard = memo(({ brand }) => {
+// Карточка бренда с фото (без memo)
+const BrandCard = ({ brand }) => {
     const icon = brandIcons[brand.type] || brandIcons.default;
     const imageUrl = getBrandImage(brand);
     const productCount = getProductCount(brand.name);
@@ -80,7 +77,6 @@ const BrandCard = memo(({ brand }) => {
                 <p className="brand-card-type">{brand.type}</p>
                 <p className="brand-card-count">{productCount} товаров</p>
 
-                {/* Контакты бренда (опционально) */}
                 {brand.contacts && brand.contacts.length > 0 && (
                     <div className="brand-contacts-preview">
                         {brand.contacts[0].phone && (
@@ -98,12 +94,9 @@ const BrandCard = memo(({ brand }) => {
             </div>
         </Link>
     );
-});
-
-BrandCard.displayName = 'BrandCard';
+};
 
 const CatalogPreview = () => {
-    // Статистика
     const totalProducts = products.length;
     const totalBrands = brands.length;
     const inStock = products.filter(p => p.inStock !== false).length;
@@ -111,7 +104,6 @@ const CatalogPreview = () => {
     return (
         <section className="catalog-preview">
             <div className="container">
-                {/* Заголовок секции */}
                 <div className="section-header">
                     <div>
                         <span className="section-subtitle">Наши партнеры</span>
@@ -122,14 +114,12 @@ const CatalogPreview = () => {
                     </div>
                 </div>
 
-                {/* Сетка брендов */}
                 <div className="brands-grid-premium">
                     {brands.map((brand) => (
                         <BrandCard key={brand.id} brand={brand} />
                     ))}
                 </div>
 
-                {/* Статистика */}
                 <div className="stats-section">
                     <div className="stats-grid">
                         <div className="stat-card">
@@ -163,7 +153,6 @@ const CatalogPreview = () => {
                     </div>
                 </div>
 
-                {/* Кнопка каталога */}
                 <div className="catalog-button-wrapper">
                     <Link href="/catalog" className="catalog-main-btn">
                         <span>Смотреть все бренды</span>
@@ -171,7 +160,6 @@ const CatalogPreview = () => {
                     </Link>
                 </div>
 
-                {/* Баннер */}
                 <div className="premium-banner">
                     <div className="banner-content">
                         <div className="banner-badge">Оптовый склад</div>
@@ -226,4 +214,4 @@ const CatalogPreview = () => {
     );
 };
 
-export default memo(CatalogPreview);
+export default CatalogPreview;

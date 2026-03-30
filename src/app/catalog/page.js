@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -7,9 +7,6 @@ import {
     FiList,
     FiBox,
     FiGlobe,
-    FiPhone,
-    FiMail,
-    FiFilter,
     FiX,
     FiChevronRight,
     FiSearch,
@@ -216,23 +213,20 @@ export default function CatalogPage() {
     const [showBrandsList, setShowBrandsList] = useState(true);
     const [categoriesOpen, setCategoriesOpen] = useState(true);
 
-    // Получаем выбранный бренд из URL
-    const selectedBrand = useMemo(() => {
-        if (!brandSlug) return null;
-        return getBrandBySlug(brandSlug);
-    }, [brandSlug]);
+    // Получаем выбранный бренд из URL (без useMemo)
+    const selectedBrand = !brandSlug ? null : getBrandBySlug(brandSlug);
 
-    // Получаем все категории из товаров
-    const allCategories = useMemo(() => {
+    // Получаем все категории из товаров (без useMemo)
+    const allCategories = (() => {
         const categories = new Set();
         products.forEach(product => {
             if (product.category) categories.add(product.category);
         });
         return ['all', ...Array.from(categories).sort()];
-    }, []);
+    })();
 
-    // Фильтруем товары по бренду, категории и поиску
-    const filteredProducts = useMemo(() => {
+    // Фильтруем товары по бренду, категории и поиску (без useMemo)
+    const filteredProducts = (() => {
         let filtered = products;
 
         if (selectedBrand) {
@@ -244,16 +238,16 @@ export default function CatalogPage() {
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(p =>
-                p.name.toLowerCase().includes(query) ||
-                p.category.toLowerCase().includes(query) ||
-                p.brand.toLowerCase().includes(query)
+                p.name?.toLowerCase().includes(query) ||
+                p.category?.toLowerCase().includes(query) ||
+                p.brand?.toLowerCase().includes(query)
             );
         }
         return filtered;
-    }, [selectedBrand, selectedCategory, searchQuery]);
+    })();
 
-    // Статистика по категориям
-    const categoryStats = useMemo(() => {
+    // Статистика по категориям (без useMemo)
+    const categoryStats = (() => {
         const stats = {};
         const sourceProducts = selectedBrand ? products.filter(p => p.brand === selectedBrand.name) : products;
         sourceProducts.forEach(p => {
@@ -262,7 +256,7 @@ export default function CatalogPage() {
             }
         });
         return stats;
-    }, [selectedBrand]);
+    })();
 
     // Функция для выбора бренда
     const handleBrandSelect = useCallback((brand) => {
