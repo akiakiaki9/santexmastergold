@@ -29,10 +29,11 @@ const Contacts = () => {
     // Основная локация - Самарканд
     const mainLocation = {
         name: 'Santex Master Gold',
-        address: 'Samarqand Xishrav, Optom sklad santexnika',
+        address: 'г. Самарканд, улица Узумзор',
         coordinates: '39.655443,66.880413',
         phone: '+998 98 110 22 55',
         phone2: '+998 91 545 22 55',
+        phone3: '+998 99 133 77 27',
         mapLink: 'https://maps.google.com/maps?q=39.655443,66.880413&ll=39.655443,66.880413&z=16',
         workHours: '09:00 - 20:00',
         workDays: 'Ежедневно'
@@ -254,6 +255,7 @@ const Contacts = () => {
                                 <strong>Телефоны:</strong>
                                 <a href="tel:+998981102255" className="location-phone-link">+998 98 110 22 55</a>
                                 <a href="tel:+998915452255" className="location-phone-link">+998 91 545 22 55</a>
+                                <a href="tel:+998991337727" className="location-phone-link">+998 99 133 77 27</a>
                             </div>
                             <div className="main-location-hours">
                                 <strong>Режим работы:</strong>
