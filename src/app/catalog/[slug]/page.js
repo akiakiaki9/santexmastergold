@@ -47,16 +47,6 @@ const socialIcons = {
     'whatsapp': <FaWhatsapp />
 };
 
-// Названия соцсетей на русском
-const socialNames = {
-    'website': 'Сайт',
-    'instagram': 'Instagram',
-    'telegram': 'Telegram',
-    'facebook': 'Facebook',
-    'youtube': 'YouTube',
-    'whatsapp': 'WhatsApp'
-};
-
 // Описания для брендов
 const brandDescriptions = {
     'Mercury plast': 'Ведущий производитель труб и фитингов для систем водоснабжения и отопления. Инновационные решения для строительства и ремонта.',
@@ -68,15 +58,23 @@ const brandDescriptions = {
     'AeMarket': 'Широкий ассортимент товаров для дома: отопление, насосы, электрика, генераторы, солнечные панели.'
 };
 
-// Компонент карточки товара (только внешние ссылки)
+// Контакты оптовика (Santex Master Gold)
+const companyContacts = {
+    phone: '+998 98 110 22 55',
+    phone2: '+998 91 545 22 55',
+    telegram: 'https://t.me/Deryakeramik',
+    instagram: 'https://www.instagram.com/master_gold_plumbing',
+    email: 'info@santexmastergold.uz',
+    website: 'https://santexmastergold.uz'
+};
+
+// Компонент карточки товара
 const ProductCard = memo(({ product }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-    // Проверяем наличие внешней ссылки
     const hasExternalUrl = product.url && product.url.startsWith('http');
 
-    // Если нет внешней ссылки, карточка не кликабельна
     if (!hasExternalUrl) {
         return (
             <div className="product-card-large no-link">
@@ -107,7 +105,6 @@ const ProductCard = memo(({ product }) => {
         );
     }
 
-    // Если есть внешняя ссылка - кликабельная карточка
     return (
         <div className="product-card-large">
             <a
@@ -152,40 +149,6 @@ const ProductCard = memo(({ product }) => {
 
 ProductCard.displayName = 'ProductCard';
 
-// Компонент социальных сетей бренда (для отображения под карточками)
-const BrandSocialWidget = memo(({ brandInfo }) => {
-    if (!brandInfo.social_links || brandInfo.social_links.length === 0) return null;
-
-    return (
-        <div className="brand-social-widget">
-            <div className="brand-social-widget-header">
-                <FiMessageCircle className="widget-icon" />
-                <h4>Больше информации в соцсетях</h4>
-            </div>
-            <p className="brand-social-widget-text">
-                Подписывайтесь на {brandInfo.name}, чтобы следить за новинками, акциями и получать подробную информацию о товарах
-            </p>
-            <div className="brand-social-widget-links">
-                {brandInfo.social_links.map((link, index) => (
-                    <a
-                        key={index}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-widget-link"
-                    >
-                        {socialIcons[link.type] || <FiGlobe />}
-                        <span>{socialNames[link.type] || link.type}</span>
-                        <FiExternalLink className="external-icon" />
-                    </a>
-                ))}
-            </div>
-        </div>
-    );
-});
-
-BrandSocialWidget.displayName = 'BrandSocialWidget';
-
 export default function BrandPage() {
     const params = useParams();
     const slug = params.slug;
@@ -193,7 +156,6 @@ export default function BrandPage() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [categoriesOpen, setCategoriesOpen] = useState(true);
 
-    // Получаем информацию о бренде по slug
     const brandInfo = useMemo(() => {
         const brandMap = {};
         brands.forEach(brand => {
@@ -203,13 +165,11 @@ export default function BrandPage() {
         return brandMap[slug] || null;
     }, [slug]);
 
-    // Получаем товары бренда
     const brandProducts = useMemo(() => {
         if (!brandInfo) return [];
         return products.filter(p => p.brand === brandInfo.name);
     }, [brandInfo]);
 
-    // Получаем категории товаров (уникальные)
     const categories = useMemo(() => {
         const cats = new Set();
         brandProducts.forEach(product => {
@@ -218,13 +178,11 @@ export default function BrandPage() {
         return ['all', ...Array.from(cats).sort()];
     }, [brandProducts]);
 
-    // Фильтруем товары по категории
     const filteredProducts = useMemo(() => {
         if (selectedCategory === 'all') return brandProducts;
         return brandProducts.filter(p => p.category === selectedCategory);
     }, [brandProducts, selectedCategory]);
 
-    // Получаем статистику по категориям
     const categoryStats = useMemo(() => {
         const stats = {};
         brandProducts.forEach(p => {
@@ -261,7 +219,7 @@ export default function BrandPage() {
             <Navbar />
 
             <main className="brand-page">
-                {/* Баннер бренда - акцент на бренде */}
+                {/* Баннер бренда - только фото, название и тип */}
                 <div className="brand-hero">
                     <div className="brand-hero-bg">
                         <div className="brand-hero-overlay"></div>
@@ -282,26 +240,6 @@ export default function BrandPage() {
                                 <h1 className="brand-name-hero">{brandInfo.name}</h1>
                                 <p className="brand-type-hero">{brandInfo.type}</p>
                                 <p className="brand-desc-hero">{brandDescriptions[brandInfo.name] || brandInfo.type}</p>
-
-                                {/* Контакты и соцсети */}
-                                <div className="brand-links-hero">
-                                    {brandInfo.contacts && brandInfo.contacts[0]?.phone && (
-                                        <a href={`tel:${brandInfo.contacts[0].phone}`} className="brand-link">
-                                            <FiPhone /> {brandInfo.contacts[0].phone}
-                                        </a>
-                                    )}
-                                    {brandInfo.contacts && brandInfo.contacts[0]?.email && (
-                                        <a href={`mailto:${brandInfo.contacts[0].email}`} className="brand-link">
-                                            <FiMail /> {brandInfo.contacts[0].email}
-                                        </a>
-                                    )}
-                                    {brandInfo.social_links?.map((link, i) => (
-                                        <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="brand-link">
-                                            {socialIcons[link.type] || <FiExternalLink />}
-                                            {link.type === 'website' ? 'Сайт' : link.type}
-                                        </a>
-                                    ))}
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -348,28 +286,33 @@ export default function BrandPage() {
                                 )}
                             </div>
 
-                            {/* Информация о бренде */}
+                            {/* Информация о бренде + контакты оптовика */}
                             <div className="brand-sidebar-info">
-                                <h4>О бренде</h4>
-                                <p>{brandInfo.description}</p>
-                                <div className="brand-features">
-                                    <div className="brand-feature">
-                                        <FiShield />
-                                        <span>Официальная гарантия</span>
-                                    </div>
-                                    <div className="brand-feature">
-                                        <FiTruck />
-                                        <span>Прямые поставки</span>
-                                    </div>
-                                    <div className="brand-feature">
-                                        <FiStar />
-                                        <span>Сертифицировано</span>
-                                    </div>
-                                </div>
+                                <h4>О бренде {brandInfo.name}</h4>
+                                <p>{brandDescriptions[brandInfo.name] || brandInfo.type}</p>
                             </div>
 
-                            {/* Виджет соцсетей в боковой панели */}
-                            <BrandSocialWidget brandInfo={brandInfo} />
+                            {/* Контакты оптовика в сайдбаре */}
+                            <div className="company-contacts-sidebar">
+                                <h4>Поставщик в Самарканде</h4>
+                                <div className="sidebar-contacts-list">
+                                    <a href={`tel:${companyContacts.phone}`} className="sidebar-contact">
+                                        <FiPhone /> {companyContacts.phone}
+                                    </a>
+                                    <a href={`tel:${companyContacts.phone2}`} className="sidebar-contact">
+                                        <FiPhone /> {companyContacts.phone2}
+                                    </a>
+                                    <a href={companyContacts.telegram} target="_blank" rel="noopener noreferrer" className="sidebar-contact telegram">
+                                        <FaTelegram /> Telegram
+                                    </a>
+                                    <a href={companyContacts.instagram} target="_blank" rel="noopener noreferrer" className="sidebar-contact instagram">
+                                        <FiInstagram /> Instagram
+                                    </a>
+                                    <a href={companyContacts.website} target="_blank" rel="noopener noreferrer" className="sidebar-contact website">
+                                        <FiGlobe /> Сайт
+                                    </a>
+                                </div>
+                            </div>
                         </aside>
 
                         {/* Правая колонка - товары */}
@@ -412,23 +355,17 @@ export default function BrandPage() {
                                     <p>Попробуйте выбрать другую категорию</p>
                                 </div>
                             ) : (
-                                <>
-                                    <div className={`products-${viewMode === 'grid' ? 'grid-large' : 'list-large'}`}>
-                                        {filteredProducts.map(product => (
-                                            <ProductCard key={product.id} product={product} />
-                                        ))}
-                                    </div>
-
-                                    {/* Виджет соцсетей под товарами (для мобильных) */}
-                                    <div className="brand-social-widget-mobile">
-                                        <BrandSocialWidget brandInfo={brandInfo} />
-                                    </div>
-                                </>
+                                <div className={`products-${viewMode === 'grid' ? 'grid-large' : 'list-large'}`}>
+                                    {filteredProducts.map(product => (
+                                        <ProductCard key={product.id} product={product} />
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </div>
                 </div>
             </main>
+
             <Footer />
         </>
     );

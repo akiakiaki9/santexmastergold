@@ -29,17 +29,17 @@ const Contacts = () => {
     // Основная локация - Самарканд
     const mainLocation = {
         name: 'Santex Master Gold',
-        address: 'г. Самарканд, ул. Узбекистанская, 45',
-        coordinates: '39.6542,66.9597',
+        address: 'Samarqand Xishrav, Optom sklad santexnika',
+        coordinates: '39.655443,66.880413',
         phone: '+998 98 110 22 55',
         phone2: '+998 91 545 22 55',
-        mapLink: 'https://maps.google.com/maps?q=39.6542,66.9597&ll=39.6542,66.9597&z=16',
+        mapLink: 'https://maps.google.com/maps?q=39.655443,66.880413&ll=39.655443,66.880413&z=16',
         workHours: '09:00 - 20:00',
         workDays: 'Ежедневно'
     };
 
     // Telegram контакт для обратной связи
-    const telegramContact = 'shavkat_sharipov_86';
+    const telegramContact = 'Deryakeramik';
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
