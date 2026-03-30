@@ -302,7 +302,7 @@ export default function ContactsPage() {
                                 <span className="social-name">Instagram</span>
                                 <span className="social-link">@master_gold_plumbing</span>
                             </a>
-                            <a
+                            {/* <a
                                 href="https://wa.me/998981102255"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -312,7 +312,7 @@ export default function ContactsPage() {
                                 <FaWhatsapp className="social-icon" />
                                 <span className="social-name">WhatsApp</span>
                                 <span className="social-link">+998 98 110 22 55</span>
-                            </a>
+                            </a> */}
                         </div>
                     </div>
                 </section>
