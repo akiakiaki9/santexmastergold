@@ -3,6 +3,7 @@ export const brands = [
         id: 1,
         name: "Mercury plast",
         type: "Трубы и фитинги",
+        description: "Трубопроводы из полипропилена и полиэтилена для внутренних и наружных сетей инженерных коммуникаций",
         contacts: [
             {
                 phone: "+99877 258 73 77",
@@ -153,124 +154,199 @@ export const brands = [
         ]
     },
 ];
-/////////////////////////////////////////////////////////////////////////////////////////
+
+
 export const products = [
     // Mercury plast
-    {
-        id: 1,
-        name: "Полипропиленовая труба PPR 20мм",
-        category: "Трубы",
-        brand: "Mercury plast",
-        image: "https://source.unsplash.com/600x600/?ppr,pipes"
-    },
-    {
-        id: 2,
-        name: "Фитинг уголок 90° PPR",
-        category: "Фитинги",
-        brand: "Mercury plast",
-        image: "https://source.unsplash.com/600x600/?pipe,fittings"
-    },
+    { id: 1, name: "Фильтр грубой очистки", category: "Фильтры", brand: "Mercury plast", image: "/images/data1/1/1.png" },
+    { id: 2, name: "Клипса", category: "Клипсы", brand: "Mercury plast", image: "/images/data1/1/2.png" },
+    { id: 3, name: "Фитинг", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/3.png" },
+    { id: 4, name: "Фитинг утка", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/4.png" },
+    { id: 5, name: "Фитинг утка", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/5.png" },
+    { id: 6, name: "Фитинг тройник", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/6.png" },
+    { id: 7, name: "Крестовина", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/7.png" },
+    { id: 8, name: "Фитинг колено", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/8.png" },
+    { id: 9, name: "Муфта", category: "Муфты", brand: "Mercury plast", image: "/images/data1/1/9.png" },
+    { id: 10, name: "Муфта с накидной гайкой", category: "Муфты", brand: "Mercury plast", image: "/images/data1/1/10.png" },
+    { id: 11, name: "Фитинг разъемный", category: "Фитинги", brand: "Mercury plast", image: "/images/data1/1/11.png" },
+    { id: 12, name: "Муфта с внутренней резьбой", category: "Муфты", brand: "Mercury plast", image: "/images/data1/1/12.png" },
+    { id: 13, name: "Трубы", category: "Трубы", brand: "Mercury plast", image: "/images/data1/1/13.png" },
+    { id: 14, name: "Вентиль", category: "Вентили", brand: "Mercury plast", image: "/images/data1/1/14.png" },
+    { id: 15, name: "Кран шаровой", category: "Краны", brand: "Mercury plast", image: "/images/data1/1/15.png" },
+    { id: 16, name: "Кран угловой шаровой", category: "Краны", brand: "Mercury plast", image: "/images/data1/1/16.png" },
+    { id: 17, name: "Муфта с внутренней резьбой", category: "Муфты", brand: "Mercury plast", image: "/images/data1/1/17.png" },
+    { id: 18, name: "Муфта с наружной резьбой", category: "Муфты", brand: "Mercury plast", image: "/images/data1/1/18.png" },
+    { id: 19, name: "Монтажная планка", category: "Планки", brand: "Mercury plast", image: "/images/data1/1/19.png" },
 
     // Zegor
-    {
-        id: 3,
-        name: "Смеситель для кухни Zegor",
-        category: "Смесители",
-        brand: "Zegor",
-        image: "https://source.unsplash.com/600x600/?kitchen,faucet"
-    },
-    {
-        id: 4,
-        name: "Смеситель для ванной с душем",
-        category: "Смесители",
-        brand: "Zegor",
-        image: "https://source.unsplash.com/600x600/?bathroom,shower,faucet"
-    },
+    { id: 20, name: "Насос", model: "ZHFm5AM", color: "Синий", category: "Насосы", brand: "Zegor", image: "/images/data1/2/1.png" },
+    { id: 21, name: "Насос", model: "CPM190", color: "Синий", category: "Насосы", brand: "Zegor", image: "/images/data1/2/2.png" },
+    { id: 22, name: "Душ", model: "T16", color: "Хром", category: "Душевые установки", brand: "Zegor", image: "/images/data1/2/3.png" },
+    { id: 23, name: "Сместитель", model: "T1", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/4.png" },
+    { id: 24, name: "Сместитель", model: "GEN1-A275", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/5.png" },
+    { id: 25, name: "Сместитель", model: "LUX-1013", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/6.png" },
+    { id: 26, name: "Сместитель", model: "LUX-1012", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/7.png" },
+    { id: 27, name: "Сместитель", model: "LUX-1011", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/8.png" },
+    { id: 28, name: "Душ", model: "GEB21-A123", color: "Хром (латунь)", category: "Душевые установки", brand: "Zegor", image: "/images/data1/2/9.png" },
+    { id: 29, name: "Сместитель кухонный", model: "LEB12-A123YB", color: "Чёрный", category: "Смесители", brand: "Zegor", image: "/images/data1/2/10.png" },
+    { id: 30, name: "Сместитель биде", model: "PUD2-A045", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/11.png" },
+    { id: 31, name: "Насос", model: "ZRS25/6GB-130", color: "Синий", category: "Насосы", brand: "Zegor", image: "/images/data1/2/12.png" },
+    { id: 32, name: "Насос", model: "BBP15H-15A", color: "Красный", category: "Насосы", brand: "Zegor", image: "/images/data1/2/13.png" },
+    { id: 33, name: "Смеситель", model: "PUD1-A045KH", color: "Нержавей", category: "Смесители", brand: "Zegor", image: "/images/data1/2/14.png" },
+    { id: 34, name: "Смеситель кухонный", model: "LEB12-A123MG", color: "Матовый", category: "Смесители", brand: "Zegor", image: "/images/data1/2/15.png" },
+    { id: 36, name: "Насос", model: "QB60", color: "Голубой", category: "Насосы", brand: "Zegor", image: "/images/data1/2/16.png" },
+    { id: 37, name: "Смеситель кухонный", model: "EZA4-K090", color: "Никель", category: "Смесители", brand: "Zegor", image: "/images/data1/2/17.png" },
+    { id: 38, name: "Смеситель кухонный", model: "DTZ4-C827", color: "Хром", category: "Смесители", brand: "Zegor", image: "/images/data1/2/18.png" },
+    { id: 39, name: "Смеситель", model: "EDN1-D156YB", color: "Чёрный", category: "Смесители", brand: "Zegor", image: "/images/data1/2/19.png" },
+    { id: 40, name: "Смеситель", model: "SAT1-A010YB", color: "Чёрный", category: "Смесители", brand: "Zegor", image: "/images/data1/2/20.png" },
 
     // Derya
-    {
-        id: 5,
-        name: "Пластиковая труба канализационная",
-        category: "Сантехника",
-        brand: "DERYA PLASTIK & DERYA KERAMIKA",
-        image: "https://source.unsplash.com/600x600/?drain,pipe"
-    },
-    {
-        id: 6,
-        name: "Керамический умывальник",
-        category: "Сантехника",
-        brand: "DERYA PLASTIK & DERYA KERAMIKA",
-        image: "https://source.unsplash.com/600x600/?ceramic,sink"
-    },
+    { id: 41, name: "Aluminium heating радиатор", type: "CALDO", category: "Радиаторы", size: "42,5*81*10,5", weight: "8.160", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/1.png" },
+    { id: 42, name: "Aluminium heating радиатор 500/80", type: "STANDART", category: "Радиаторы", size: "58,3*79,1*8,5", weight: "8.680", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/2.png" },
+    { id: 43, name: "Чаша", model: "1008", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/3.png" },
+    { id: 44, name: "Чаша", model: "1003", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/4.png" },
+    { id: 45, name: "Чаша", model: "1004", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/5.png" },
+    { id: 46, name: "Чаша", model: "4004", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/6.png" },
+    { id: 47, name: "Чаша", model: "4006", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/7.png" },
+    { id: 48, name: "Чаша", model: "4105", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/8.png" },
+    { id: 49, name: "Чаша", model: "4702", category: "Чаши", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/9.png" },
+    { id: 50, name: "Раковины", model: "UNQ-2004", color: "Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/10.png" },
+    { id: 51, name: "Раковины", model: "UNQ-2001", color: "Rose Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/11.png" },
+    { id: 52, name: "Раковины", model: "UNQ-2011", color: "Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/12.png" },
+    { id: 53, name: "Раковины", model: "UNQ-2010", color: "Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/13.png" },
+    { id: 54, name: "Раковины", model: "UNQ-2006", color: "Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/14.png" },
+    { id: 55, name: "Раковины", model: "UNG-2008", color: "Silver", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/15.png" },
+    { id: 56, name: "Раковины", model: "1002", color: "White", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/16.png" },
+    { id: 57, name: "Раковины", model: "1001", color: "White", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/17.png" },
+    { id: 58, name: "Раковины", model: "2008", color: "Gold", category: "Раковины", brand: "DERYA PLASTIK & DERYA KERAMIKA", image: "/images/data1/3/18.png" },
 
     // Hydro Plast
-    {
-        id: 7,
-        name: "Труба для холодной воды 25мм",
-        category: "Трубы",
-        brand: "Hydro Plast",
-        image: "https://source.unsplash.com/600x600/?water,pipes"
-    },
-    {
-        id: 8,
-        name: "Муфта соединительная",
-        category: "Фитинги",
-        brand: "Hydro Plast",
-        image: "https://source.unsplash.com/600x600/?pipe,connector"
-    },
+    { id: 59, brand: "Hydro Plast", image: "/images/data1/4/1.png" },
+    { id: 60, brand: "Hydro Plast", image: "/images/data1/4/2.png" },
+    { id: 61, brand: "Hydro Plast", image: "/images/data1/4/3.png" },
+    { id: 62, brand: "Hydro Plast", image: "/images/data1/4/4.png" },
+    { id: 63, brand: "Hydro Plast", image: "/images/data1/4/5.png" },
+    { id: 64, brand: "Hydro Plast", image: "/images/data1/4/6.png" },
+    { id: 65, brand: "Hydro Plast", image: "/images/data1/4/7.png" },
+    { id: 66, brand: "Hydro Plast", image: "/images/data1/4/8.png" },
+    { id: 67, brand: "Hydro Plast", image: "/images/data1/4/9.png" },
+    { id: 68, brand: "Hydro Plast", image: "/images/data1/4/10.png" },
+    { id: 69, brand: "Hydro Plast", image: "/images/data1/4/11.png" },
+    { id: 70, brand: "Hydro Plast", image: "/images/data1/4/12.png" },
+    { id: 71, brand: "Hydro Plast", image: "/images/data1/4/13.png" },
+    { id: 72, brand: "Hydro Plast", image: "/images/data1/4/14.png" },
+    { id: 73, brand: "Hydro Plast", image: "/images/data1/4/15.png" },
 
     // Climaroom
-    {
-        id: 9,
-        name: "Вентилятор вытяжной",
-        category: "Вентиляция",
-        brand: "Climaroom",
-        image: "https://source.unsplash.com/600x600/?ventilation,fan"
-    },
-    {
-        id: 10,
-        name: "Воздуховод пластиковый",
-        category: "Вентиляция",
-        brand: "Climaroom",
-        image: "https://source.unsplash.com/600x600/?air,duct"
-    },
+    { id: 74, brand: "Climaroom", image: "/images/data1/5/1.png" },
+    { id: 75, brand: "Climaroom", image: "/images/data1/5/2.png" },
+    { id: 76, brand: "Climaroom", image: "/images/data1/5/3.png" },
+    { id: 77, brand: "Climaroom", image: "/images/data1/5/4.png" },
+    { id: 78, brand: "Climaroom", image: "/images/data1/5/5.png" },
+    { id: 79, brand: "Climaroom", image: "/images/data1/5/6.png" },
+    { id: 80, brand: "Climaroom", image: "/images/data1/5/7.png" },
+    { id: 81, brand: "Climaroom", image: "/images/data1/5/8.png" },
+    { id: 82, brand: "Climaroom", image: "/images/data1/5/9.png" },
+    { id: 83, brand: "Climaroom", image: "/images/data1/5/10.png" },
+    { id: 84, brand: "Climaroom", image: "/images/data1/5/11.png" },
+    { id: 85, brand: "Climaroom", image: "/images/data1/5/12.png" },
 
     // Fayz Plast
-    {
-        id: 11,
-        name: "Пластиковая бочка 200л",
-        category: "Бочки",
-        brand: "Fayz Plast",
-        image: "https://source.unsplash.com/600x600/?plastic,barrel"
-    },
-    {
-        id: 12,
-        name: "Пластиковая емкость 500л",
-        category: "Бочки",
-        brand: "Fayz Plast",
-        image: "https://source.unsplash.com/600x600/?water,tank"
-    },
+    { id: 86, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/1.png" },
+    { id: 87, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/2.png" },
+    { id: 88, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/3.png" },
+    { id: 89, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/4.png" },
+    { id: 90, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/5.png" },
+    { id: 91, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/6.png" },
+    { id: 92, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/7.png" },
+    { id: 93, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/8.png" },
+    { id: 94, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/9.png" },
+    { id: 95, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/10.png" },
+    { id: 96, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/11.png" },
+    { id: 97, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/12.png" },
+    { id: 98, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/13.png" },
+    { id: 99, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/14.png" },
+    { id: 100, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/15.png" },
+    { id: 101, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/16.png" },
+    { id: 102, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/17.png" },
+    { id: 103, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/18.png" },
+    { id: 104, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/19.png" },
+    { id: 105, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/20.png" },
+    { id: 106, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/21.png" },
+    { id: 107, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/22.png" },
+    { id: 108, name: "Бочок", brand: "Fayz Plast", image: "/images/data1/6/23.png" },
 
     // AeMarket
     {
-        id: 13,
-        name: "Бойлер электрический 80л",
-        category: "Отопление",
+        name: "Koer",
+        url: "https://aemarket.com.ua/koer-1/dushovi-perehorodky-ta-kabiny",
         brand: "AeMarket",
-        image: "https://source.unsplash.com/600x600/?water,heater"
+        image: "/images/data1/7/1.png"
     },
     {
-        id: 14,
-        name: "Бензиновый генератор 3кВт",
-        category: "Электрооборудование",
+        name: "Бойлеры",
+        url: "https://aemarket.com.ua/boylery",
         brand: "AeMarket",
-        image: "https://source.unsplash.com/600x600/?generator"
+        image: "/images/data1/7/2.png"
     },
     {
-        id: 15,
-        name: "Циркуляционный насос",
-        category: "Насосы",
+        name: "Ванная комната",
+        url: "https://aemarket.com.ua/vannaja-komnata-1/pralni-mashini",
         brand: "AeMarket",
-        image: "https://source.unsplash.com/600x600/?water,pump"
-    }
+        image: "/images/data1/7/3.png"
+    },
+    {
+        name: "Газовые колонки",
+        url: "https://aemarket.com.ua/kolonki",
+        brand: "AeMarket",
+        image: "/images/data1/7/4.png"
+    },
+    {
+        name: "Для кухни",
+        url: "https://aemarket.com.ua/dlja-kuhni/vbudovani-duhovi-shafi",
+        brand: "AeMarket",
+        image: "/images/data1/7/5.png"
+    },
+    {
+        name: "Котлы",
+        url: "https://aemarket.com.ua/kotly",
+        brand: "AeMarket",
+        image: "/images/data1/7/6.png"
+    },
+    {
+        name: "Насосное оборудование",
+        url: "https://aemarket.com.ua/nasosnoe-oborudovanie/drenazhnye-nasosy",
+        brand: "AeMarket",
+        image: "/images/data1/7/7.png"
+    },
+    {
+        name: "Смесители",
+        url: "https://aemarket.com.ua/smesytely-2/smesytely-dlia-hyhyenycheskoho-dusha-byde",
+        brand: "AeMarket",
+        image: "/images/data1/7/8.png"
+    },
+    {
+        name: "Солнечная энергия",
+        url: "https://aemarket.com.ua/altek-1/solnechnye-elektrostancii",
+        brand: "AeMarket",
+        image: "/images/data1/7/9.png"
+    },
+    {
+        name: "Источник питания и зарядные устройства",
+        url: "https://aemarket.com.ua/istochniki-pitanija-i-zarjadnye-ustrojstva/pusko-zaryadn-pristro",
+        brand: "AeMarket",
+        image: "/images/data1/7/10.png"
+    },
+    {
+        name: "Конвекторы",
+        url: "https://aemarket.com.ua/konvektory",
+        brand: "AeMarket",
+        image: "/images/data1/7/11.png"
+    },
+    {
+        name: "Расширительные баки и гидроаккумуляторы",
+        url: "https://aemarket.com.ua/rasshiritelnye-baki-i-gidroakkumulyatory",
+        brand: "AeMarket",
+        image: "/images/data1/7/12.png"
+    },
 ];

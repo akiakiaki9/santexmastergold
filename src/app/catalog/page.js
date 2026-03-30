@@ -24,7 +24,7 @@ import './catalog.css';
 
 // Функция для создания слага из названия бренда
 const createSlug = (name) => {
-    if (!name) return '';
+    if (!name) return ''; 
     return name
         .toLowerCase()
         .replace(/[&]/g, 'and')
