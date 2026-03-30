@@ -161,6 +161,7 @@ export default function ContactsPage() {
                                 <h3 className="info-title">Телефоны</h3>
                                 <a href="tel:+998981102255" className="info-value">+998 98 110 22 55</a>
                                 <a href="tel:+998915452255" className="info-value">+998 91 545 22 55</a>
+                                <a href="tel:+998991337727" className="info-value">+998 99 133 77 27</a>
                                 <p className="info-note">Для связи с менеджером</p>
                             </div>
 

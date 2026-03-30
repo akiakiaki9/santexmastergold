@@ -86,6 +86,7 @@ const Contacts = () => {
             values: [
                 { type: 'tel', value: '+998981102255', label: '+998 98 110 22 55' },
                 { type: 'tel', value: '+998915452255', label: '+998 91 545 22 55' },
+                { type: 'tel', value: '+998991337727', label: '+998 99 133 77 27' },
             ],
             note: 'Для связи с менеджером'
         },
