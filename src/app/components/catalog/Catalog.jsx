@@ -15,6 +15,9 @@ import { FaTelegram, FaInstagram } from 'react-icons/fa';
 import { brands, products } from '@/app/utils/data1';
 import './catalog.css';
 
+// Номера телефонов сайта
+const SITE_PHONES = ['+998981102255', '+998915452255'];
+
 // Функция для создания слага из названия бренда
 const createSlug = (name) => {
     return name
@@ -57,6 +60,12 @@ const getBrandImage = (brand) => {
     return defaultImages[brand.name] || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&auto=format';
 };
 
+// Форматирование номера телефона для отображения
+const formatPhoneNumber = (phone) => {
+    if (!phone) return '';
+    return phone.replace(/(\+998)(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3-$4-$5');
+};
+
 // Карточка бренда с фото (без memo)
 const BrandCard = ({ brand }) => {
     const icon = brandIcons[brand.type] || brandIcons.default;
@@ -77,15 +86,12 @@ const BrandCard = ({ brand }) => {
                 <p className="brand-card-type">{brand.type}</p>
                 <p className="brand-card-count">{productCount} товаров</p>
 
-                {brand.contacts && brand.contacts.length > 0 && (
-                    <div className="brand-contacts-preview">
-                        {brand.contacts[0].phone && (
-                            <span className="brand-contact-phone">
-                                <FiPhone size={12} /> {brand.contacts[0].phone}
-                            </span>
-                        )}
-                    </div>
-                )}
+                {/* Отображаем ТОЛЬКО номера сайта, без телефонов поставщиков */}
+                <div className="brand-contacts-preview">
+                    <span className="brand-contact-phone">
+                        <FiPhone size={12} /> {formatPhoneNumber(SITE_PHONES[0])}
+                    </span>
+                </div>
 
                 <span className="brand-card-link">
                     Перейти

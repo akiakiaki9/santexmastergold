@@ -29,6 +29,9 @@ const createSlug = (name) => {
         .replace(/\s+/g, '-');
 };
 
+// Номера телефонов сайта
+const SITE_PHONES = ['+998981102255', '+998915452255'];
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -44,7 +47,7 @@ const Navbar = () => {
     const menuRef = useRef(null);
     const router = useRouter();
 
-    // Данные поставщиков (бренды с фото)
+    // Данные поставщиков (бренды с фото) - телефоны заменены на номера сайта
     const suppliers = useMemo(() => {
         return brands.map(brand => ({
             id: brand.id,
@@ -52,7 +55,7 @@ const Navbar = () => {
             type: brand.type || '',
             image: brand.image,
             slug: createSlug(brand.name),
-            phone: brand.contacts?.[0]?.phone || null,
+            phone: SITE_PHONES[0], // Используем первый номер сайта вместо телефона поставщика
             email: brand.contacts?.[0]?.email || null
         }));
     }, []);
@@ -447,16 +450,15 @@ const Navbar = () => {
                                             <h4>{supplier.name || 'Бренд'}</h4>
                                             <span className="supplier-type">{supplier.type || ''}</span>
                                         </div>
-                                        {supplier.phone && (
-                                            <a
-                                                href={`tel:${supplier.phone}`}
-                                                className="supplier-phone"
-                                                onClick={() => setShowSuppliersModal(false)}
-                                            >
-                                                <FiPhone className="supplier-phone-icon" />
-                                                {supplier.phone}
-                                            </a>
-                                        )}
+                                        {/* Телефон заменен на номер сайта */}
+                                        <a
+                                            href={`tel:${supplier.phone}`}
+                                            className="supplier-phone"
+                                            onClick={() => setShowSuppliersModal(false)}
+                                        >
+                                            <FiPhone className="supplier-phone-icon" />
+                                            {supplier.phone}
+                                        </a>
                                         {supplier.email && (
                                             <a
                                                 href={`mailto:${supplier.email}`}
