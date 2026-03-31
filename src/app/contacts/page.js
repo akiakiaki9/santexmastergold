@@ -282,7 +282,7 @@ export default function ContactsPage() {
                         </p>
                         <div className="social-grid">
                             <a
-                                href="https://t.me/shavkat_sharipov_86"
+                                href="https://t.me/Deryakeramik"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="social-card telegram"
